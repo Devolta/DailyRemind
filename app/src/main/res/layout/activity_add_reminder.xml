@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    tools:context=".AddReminder">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar2"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        android:theme="@style/AppTheme.AppBarOverlay"
+        app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
+            card_view:contentPadding="16dp"
+            card_view:theme="@style/CardView.Dark">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="15dp">
+
+                    <TextView
+                        android:id="@+id/date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:clickable="true"
+                        android:onClick="showDatePickerDialog"
+                        android:text="Date"
+                        android:textColor="@color/textPrimary"
+                        android:textSize="25sp" />
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="35sp"
+                        android:layout_centerInParent="true"
+                        android:background="@android:color/darker_gray" />
+
+                    <TextView
+                        android:id="@+id/time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:clickable="true"
+                        android:onClick="showTimePickerDialog"
+                        android:text="Time"
+                        android:textColor="@color/textPrimary"
+                        android:textSize="25sp" />
+                </RelativeLayout>
+
+                <EditText
+                    android:id="@+id/remindText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Enter what to remember"
+                    android:textColor="@color/textPrimary" />
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
+            card_view:contentPadding="16dp"
+            card_view:theme="@style/CardView.Dark">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <Switch
+                    android:id="@+id/repeat_switch"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="16dp"
+                    android:drawableStart="@drawable/repeat"
+                    android:maxLines="2"
+                    android:paddingEnd="5dp"
+                    android:paddingTop="8dp"
+                    android:switchMinWidth="60dp"
+                    android:text="Repeat"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/quantity_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/repeat_switch"
+                    android:drawablePadding="16dp"
+                    android:drawableStart="@drawable/swap_vertical"
+                    android:paddingEnd="200dp"
+                    android:paddingTop="16dp"
+                    android:text="Quantity"
+                    android:textColor="@color/textPrimary"
+                    android:textSize="16sp" />
+
+                <EditText
+                    android:id="@+id/quantity_et"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/repeat_switch"
+                    android:layout_marginEnd="8dp"
+                    android:layout_toEndOf="@+id/quantity_tv"
+                    android:gravity="center"
+                    android:inputType="number"
+                    android:maxLength="2" />
+
+                <TextView
+                    android:id="@+id/quantity_tv2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/quantity_tv"
+                    android:drawablePadding="16dp"
+                    android:drawableStart="@drawable/subject"
+                    android:paddingBottom="8dp"
+                    android:paddingEnd="215dp"
+                    android:paddingTop="16dp"
+                    android:text="Mode"
+                    android:textColor="@color/textPrimary"
+                    android:textSize="16sp" />
+
+                <Spinner
+                    android:id="@+id/spinner_mode"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/quantity_et"
+                    android:layout_marginTop="8dp"
+                    android:layout_toEndOf="@+id/quantity_tv2"
+                    android:background="@android:color/transparent"
+                    android:clickable="true" />
+
+            </RelativeLayout>
+
+        </android.support.v7.widget.CardView>
+
+    </LinearLayout>
+
+</LinearLayout>

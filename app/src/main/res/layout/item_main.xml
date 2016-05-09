@@ -1,0 +1,64 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/background"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/selector_row"
+    android:elevation="1dp"
+    android:minHeight="72dp"
+    android:orientation="horizontal"
+    tools:ignore="Overdraw">
+
+    <ImageView
+        android:id="@+id/thumbnail"
+        android:layout_width="46dp"
+        android:layout_height="46dp"
+        android:layout_gravity="center"
+        android:layout_marginStart="16dp"
+        tools:ignore="ContentDescription" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingEnd="16dp"
+        android:paddingStart="16dp">
+
+        <TextView
+            android:id="@+id/card_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            android:paddingTop="16dp"
+            android:text="no reminder"
+            android:textColor="@color/textPrimary"
+            android:textSize="16sp"
+            tools:ignore="HardcodedText" />
+
+        <TextView
+            android:id="@+id/card_tv2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/card_tv"
+            android:layout_gravity="bottom"
+            android:clickable="false"
+            android:paddingBottom="20dp"
+            android:text="no date"
+            android:textColor="@color/textSecondary"
+            android:textSize="12sp"
+            tools:ignore="HardcodedText" />
+
+        <ImageView
+            android:id="@+id/card_check"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerInParent="true"
+            android:minHeight="35dp"
+            android:minWidth="35dp"
+            android:src="@drawable/check"
+            android:tint="@color/colorMaterialGreen"
+            android:visibility="invisible"
+            tools:ignore="ContentDescription" />
+    </RelativeLayout>
+
+</LinearLayout>
