@@ -42,6 +42,15 @@
         <receiver
             android:name=".AlarmReceiver"
             android:process=":remote" />
+
+        <receiver android:name=".BootReceiver">
+            <intent-filter android:priority="999">
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
     </application>
 
 

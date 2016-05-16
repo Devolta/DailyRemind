@@ -13,6 +13,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -242,7 +243,7 @@ public class AddReminder extends AppCompatActivity {
                     cards.add(card);
                     startActivity(intent);
 
-                    SharedPreferences prefs = getSharedPreferences(AddReminder.class.getSimpleName(), Context.MODE_PRIVATE);
+                    SharedPreferences prefs = getSharedPreferences(AddReminder.class.getSimpleName() + " " + cards.size(), Context.MODE_PRIVATE);
                     int intentNumber = prefs.getInt("intentNumber", 0);
                     intentNumber2.add(prefs.getInt("intentNumber", 0));
 
@@ -252,7 +253,12 @@ public class AddReminder extends AppCompatActivity {
                     alarmIntent = PendingIntent.getBroadcast(getApplicationContext(), intentNumber, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
 
                     SharedPreferences.Editor editor = prefs.edit();
+                    editor.putString("Text", remindText);
                     editor.putInt("intentNumber", intentNumber);
+                    editor.putString("repeat", "" + true);
+                    editor.putLong("CalendarTime", calendar.getTimeInMillis());
+                    editor.putLong("Repeat_Quantity", 0);
+                    editor.putInt("Quantity", 0);
                     editor.apply();
                     intentNumber++;
 
@@ -268,7 +274,8 @@ public class AddReminder extends AppCompatActivity {
                     cards.add(card);
                     startActivity(intent);
 
-                    SharedPreferences prefs = getSharedPreferences(AddReminder.class.getSimpleName(), Context.MODE_PRIVATE);
+                    SharedPreferences prefs = getSharedPreferences(AddReminder.class.getSimpleName() + " " + cards.size(), Context.MODE_PRIVATE);
+                    Log.w("Name", AddReminder.class.getSimpleName() + " " + cards.size());
                     int intentNumber = prefs.getInt("intentNumber", 0);
                     intentNumber2.add(prefs.getInt("intentNumber", 0));
 
@@ -278,7 +285,10 @@ public class AddReminder extends AppCompatActivity {
                     alarmIntent = PendingIntent.getBroadcast(getApplicationContext(), intentNumber, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
 
                     SharedPreferences.Editor editor = prefs.edit();
+                    editor.putString("Text", remindText);
                     editor.putInt("intentNumber", intentNumber);
+                    editor.putString("repeat", "" + false);
+                    editor.putLong("CalendarTime", calendar.getTimeInMillis());
                     editor.apply();
                     intentNumber++;
 

@@ -1,0 +1,64 @@
+package com.icedex.dailyremind;
+
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.util.Log;
+
+import com.icedex.dailyremind.RecyclerData.Card;
+
+import java.util.ArrayList;
+
+public class BootReceiver extends BroadcastReceiver {
+
+    public static ArrayList<Card> cards = new ArrayList<>();
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+
+        if (intent.getAction().equalsIgnoreCase(Intent.ACTION_BOOT_COMPLETED)) {
+            if (context != null) {
+                Log.d("Reboot", "Reboot complete");
+
+                AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
+                //restart alarm for every card
+                try {
+                    for (int i = cards.size(); i >= 0; i--) {
+                        Intent intent1 = new Intent(context, AlarmReceiver.class);
+
+                        int number = i + 1;
+                        SharedPreferences prefs = context.getSharedPreferences(AddReminder.class.getSimpleName() + " " + number, Context.MODE_PRIVATE);
+
+                        String remindText = prefs.getString("Text", "null");
+                        intent1.putExtra("RemindText", remindText);
+                        Log.d("Name", AddReminder.class.getSimpleName() + " " + number);
+                        int intentNumber = prefs.getInt("intentNumber", 0);
+                        String repeat = prefs.getString("repeat", "null");
+                        long calendarTime = prefs.getLong("CalendarTime", 0);
+
+                        PendingIntent alarmIntent = PendingIntent.getBroadcast(context, intentNumber, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                        if (repeat.equalsIgnoreCase("true")) {
+
+                            long repeat_quantity = prefs.getLong("Repeat_Quantity", 0);
+                            int quantity = prefs.getInt("Quantity", 0);
+                            alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendarTime, repeat_quantity * quantity, alarmIntent);
+
+                        } else {
+
+                            alarmMgr.setExact(AlarmManager.RTC_WAKEUP, calendarTime, alarmIntent);
+
+                        }
+
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+}
