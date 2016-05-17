@@ -76,7 +76,7 @@
                     android:id="@+id/remindText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Enter what to remember"
+                    android:hint="@string/reminder_text"
                     android:textColor="@color/textPrimary" />
 
             </LinearLayout>
@@ -108,7 +108,7 @@
                     android:paddingEnd="5dp"
                     android:paddingTop="8dp"
                     android:switchMinWidth="60dp"
-                    android:text="Repeat"
+                    android:text="@string/repeat"
                     android:textSize="16sp" />
 
                 <TextView
@@ -120,7 +120,7 @@
                     android:drawableStart="@drawable/swap_vertical"
                     android:paddingEnd="200dp"
                     android:paddingTop="16dp"
-                    android:text="Quantity"
+                    android:text="@string/quantity"
                     android:textColor="@color/textPrimary"
                     android:textSize="16sp" />
 
@@ -145,7 +145,7 @@
                     android:paddingBottom="8dp"
                     android:paddingEnd="215dp"
                     android:paddingTop="16dp"
-                    android:text="Mode"
+                    android:text="@string/mode"
                     android:textColor="@color/textPrimary"
                     android:textSize="16sp" />
 

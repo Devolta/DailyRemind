@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">DailyRemind</string>
+
+    <string name="action_settings">Einstellungen</string>
+    <string name="reminder_text">Erinnerung eingeben</string>
+    <string name="repeat">Wiederholen</string>
+    <string name="quantity">Menge</string>
+    <string name="mode">Modus</string>
+    <string name="new_reminder">Neue Erinnerung</string>
+</resources>
