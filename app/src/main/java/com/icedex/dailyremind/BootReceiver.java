@@ -11,6 +11,7 @@ import android.util.Log;
 import com.icedex.dailyremind.RecyclerData.Card;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class BootReceiver extends BroadcastReceiver {
 
@@ -18,6 +19,8 @@ public class BootReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+
+        final Calendar calendar = Calendar.getInstance();
 
         if (intent.getAction().equalsIgnoreCase(Intent.ACTION_BOOT_COMPLETED)) {
             if (context != null) {
@@ -40,18 +43,23 @@ public class BootReceiver extends BroadcastReceiver {
                         String repeat = prefs.getString("repeat", "null");
                         long calendarTime = prefs.getLong("CalendarTime", 0);
 
-                        PendingIntent alarmIntent = PendingIntent.getBroadcast(context, intentNumber, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
+                        Log.d("Time", "" + calendarTime + "   " + calendar.getTimeInMillis());
 
-                        if (repeat.equalsIgnoreCase("true")) {
+                        if (calendarTime > calendar.getTimeInMillis()) {
 
-                            long repeat_quantity = prefs.getLong("Repeat_Quantity", 0);
-                            int quantity = prefs.getInt("Quantity", 0);
-                            alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendarTime, repeat_quantity * quantity, alarmIntent);
+                            PendingIntent alarmIntent = PendingIntent.getBroadcast(context, intentNumber, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
 
-                        } else {
+                            if (repeat.equalsIgnoreCase("true")) {
 
-                            alarmMgr.setExact(AlarmManager.RTC_WAKEUP, calendarTime, alarmIntent);
+                                long repeat_quantity = prefs.getLong("Repeat_Quantity", 0);
+                                int quantity = prefs.getInt("Quantity", 0);
+                                alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendarTime, repeat_quantity * quantity, alarmIntent);
 
+                            } else {
+
+                                alarmMgr.setExact(AlarmManager.RTC_WAKEUP, calendarTime, alarmIntent);
+
+                            }
                         }
 
                     }

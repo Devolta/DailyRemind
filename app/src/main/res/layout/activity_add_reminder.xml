@@ -51,7 +51,8 @@
                         android:onClick="showDatePickerDialog"
                         android:text="Date"
                         android:textColor="@color/textPrimary"
-                        android:textSize="25sp" />
+                        android:textSize="25sp"
+                        tools:ignore="HardcodedText" />
 
                     <View
                         android:layout_width="1dp"
@@ -69,13 +70,14 @@
                         android:onClick="showTimePickerDialog"
                         android:text="Time"
                         android:textColor="@color/textPrimary"
-                        android:textSize="25sp" />
+                        android:textSize="25sp"
+                        tools:ignore="HardcodedText" />
                 </RelativeLayout>
 
                 <EditText
                     android:id="@+id/remindText"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="39dp"
                     android:hint="@string/reminder_text"
                     android:textColor="@color/textPrimary" />
 
@@ -106,6 +108,7 @@
                     android:drawableStart="@drawable/repeat"
                     android:maxLines="2"
                     android:paddingEnd="5dp"
+                    android:paddingStart="0dp"
                     android:paddingTop="8dp"
                     android:switchMinWidth="60dp"
                     android:text="@string/repeat"
@@ -119,6 +122,7 @@
                     android:drawablePadding="16dp"
                     android:drawableStart="@drawable/swap_vertical"
                     android:paddingEnd="200dp"
+                    android:paddingStart="0dp"
                     android:paddingTop="16dp"
                     android:text="@string/quantity"
                     android:textColor="@color/textPrimary"
@@ -128,11 +132,12 @@
                     android:id="@+id/quantity_et"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/repeat_switch"
+                    android:layout_below="@id/repeat_switch"
                     android:layout_marginEnd="8dp"
-                    android:layout_toEndOf="@+id/quantity_tv"
+                    android:layout_toEndOf="@id/quantity_tv"
                     android:gravity="center"
                     android:inputType="number"
+                    android:labelFor="@id/quantity_et"
                     android:maxLength="2" />
 
                 <TextView
@@ -144,6 +149,7 @@
                     android:drawableStart="@drawable/subject"
                     android:paddingBottom="8dp"
                     android:paddingEnd="215dp"
+                    android:paddingStart="0dp"
                     android:paddingTop="16dp"
                     android:text="@string/mode"
                     android:textColor="@color/textPrimary"

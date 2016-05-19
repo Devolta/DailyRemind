@@ -53,9 +53,9 @@ public class MainActivity extends AppCompatActivity {
 
     public static final ArrayList<Integer> intentNumber2 = new ArrayList<>();
     public static ArrayList<Card> cards = new ArrayList<>();
-    public static ImageView card_check;
     private final SimpleDateFormat sdtf = new SimpleDateFormat("MM/dd/yyyy hh:mm a", Locale.getDefault());
     private final MultiSelector multiSelector = new MultiSelector();
+    public ImageView card_check;
     private RemoveItem removeItem;
     // Multi select items in recycler view
     private final android.support.v7.view.ActionMode.Callback mDeleteMode = new ModalMultiSelectorCallback(multiSelector) {
