@@ -33,7 +33,6 @@ import com.bignerdranch.android.multiselector.MultiSelector;
 import com.bignerdranch.android.multiselector.SwappingHolder;
 import com.icedex.dailyremind.Interfaces.RemoveItem;
 import com.icedex.dailyremind.RecyclerData.Card;
-import com.squareup.leakcanary.LeakCanary;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -48,6 +47,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
+
+//import com.squareup.leakcanary.LeakCanary;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -191,16 +192,20 @@ public class MainActivity extends AppCompatActivity {
         if (remove == 0) {
             if (cards.isEmpty()) {
                 try {
-                    FileInputStream fileInputStream;
-                    fileInputStream = context.openFileInput("Reminder");
-                    ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-                    try {
-                        @SuppressWarnings("unchecked")
-                        ArrayList<Card> returnList = (ArrayList<Card>) objectInputStream.readObject();
-                        objectInputStream.close();
-                        cards = returnList;
-                    } catch (ClassCastException e) {
-                        e.printStackTrace();
+                    String path = context.getFilesDir().getAbsolutePath() + "/" + "Reminder";
+                    File file = new File(path);
+                    if (file.exists()) {
+                        FileInputStream fileInputStream;
+                        fileInputStream = context.openFileInput("Reminder");
+                        ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+                        try {
+                            @SuppressWarnings("unchecked")
+                            ArrayList<Card> returnList = (ArrayList<Card>) objectInputStream.readObject();
+                            objectInputStream.close();
+                            cards = returnList;
+                        } catch (ClassCastException e) {
+                            e.printStackTrace();
+                        }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -235,7 +240,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        LeakCanary.install(this.getApplication());
+        //LeakCanary.install(this.getApplication());
 
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);

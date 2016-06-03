@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.util.Log;
 
 import com.icedex.dailyremind.RecyclerData.Card;
@@ -57,7 +58,12 @@ public class BootReceiver extends BroadcastReceiver {
 
                             } else {
 
-                                alarmMgr.setExact(AlarmManager.RTC_WAKEUP, calendarTime, alarmIntent);
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                                    alarmMgr.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmIntent);
+                                } else {
+                                    Log.d("Test", "" + calendar.getTimeInMillis());
+                                    alarmMgr.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmIntent);
+                                }
 
                             }
                         }

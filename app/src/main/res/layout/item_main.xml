@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/selector_row"
+    android:descendantFocusability="blocksDescendants"
     android:elevation="1dp"
     android:minHeight="72dp"
     android:orientation="horizontal"
@@ -14,14 +15,15 @@
         android:layout_width="46dp"
         android:layout_height="46dp"
         android:layout_gravity="center"
+        android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
         tools:ignore="ContentDescription" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingEnd="16dp"
-        android:paddingStart="16dp">
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp">
 
         <TextView
             android:id="@+id/card_tv"
@@ -52,6 +54,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
             android:layout_centerInParent="true"
             android:minHeight="35dp"
             android:minWidth="35dp"

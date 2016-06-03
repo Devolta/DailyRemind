@@ -12,6 +12,10 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatEditText;
+import android.support.v7.widget.AppCompatSpinner;
+import android.support.v7.widget.AppCompatTextView;
+import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -23,14 +27,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
-import android.widget.EditText;
-import android.widget.Spinner;
-import android.widget.Switch;
-import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.icedex.dailyremind.RecyclerData.Card;
-import com.squareup.leakcanary.LeakCanary;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -43,6 +42,8 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
+//import com.squareup.leakcanary.LeakCanary;
+
 public class AddReminder extends AppCompatActivity {
 
     private static final ArrayList<Card> cards = MainActivity.cards;
@@ -51,14 +52,14 @@ public class AddReminder extends AppCompatActivity {
     private final SimpleDateFormat stf = new SimpleDateFormat("hh:mm a", Locale.getDefault());
     private final Calendar calendar = Calendar.getInstance();
     private String remindText;
-    private TextView SelectedDateView;
+    private AppCompatTextView SelectedDateView;
     private final DatePickerDialog.OnDateSetListener dateOnDateSetListener = new DatePickerDialog.OnDateSetListener() {
         public void onDateSet(DatePicker view, int year, int month, int day) {
             calendar.set(year, month, day);
             SelectedDateView.setText(sdf.format(calendar.getTime()));
         }
     };
-    private TextView SelectedTimeView;
+    private AppCompatTextView SelectedTimeView;
     private final TimePickerDialog.OnTimeSetListener onTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
 
 
@@ -76,13 +77,13 @@ public class AddReminder extends AppCompatActivity {
             SelectedTimeView.setText(stf.format(calendar.getTime()));
         }
     };
-    private EditText quantity_et;
+    private AppCompatEditText quantity_et;
     private int year;
     private int month;
     private int day;
     private boolean repeat;
     private long repeat_quantity;
-    private Spinner spinner_mode;
+    private AppCompatSpinner spinner_mode;
 
     private static String calculateTimeDifference(long then, long now) {
         if (then > now) {
@@ -153,21 +154,21 @@ public class AddReminder extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        LeakCanary.install(this.getApplication());
+        //LeakCanary.install(this.getApplication());
 
         setContentView(R.layout.activity_add_reminder);
 
-        SelectedDateView = (TextView) findViewById(R.id.date);
-        SelectedTimeView = (TextView) findViewById(R.id.time);
-        Switch repeat_switch = (Switch) findViewById(R.id.repeat_switch);
-        spinner_mode = (Spinner) findViewById(R.id.spinner_mode);
-        quantity_et = (EditText) findViewById(R.id.quantity_et);
+        SelectedDateView = (AppCompatTextView) findViewById(R.id.date);
+        SelectedTimeView = (AppCompatTextView) findViewById(R.id.time);
+        SwitchCompat repeat_switch = (SwitchCompat) findViewById(R.id.repeat_switch);
+        spinner_mode = (AppCompatSpinner) findViewById(R.id.spinner_mode);
+        quantity_et = (AppCompatEditText) findViewById(R.id.quantity_et);
 
         SelectedDateView.setText(sdf.format(calendar.getTime()));
-        SelectedDateView.setPadding(35, 0, 50, 0);
 
         SelectedTimeView.setText(stf.format(calendar.getTime()));
-        SelectedTimeView.setPadding(35, 0, 50, 0);
+
+        addClickListener();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
@@ -221,7 +222,7 @@ public class AddReminder extends AppCompatActivity {
 
             String remainingTime = calculateTimeDifference(then.getTime(), now.getTime()); //get remaining time
 
-            EditText editText = (EditText) findViewById(R.id.remindText);
+            AppCompatEditText editText = (AppCompatEditText) findViewById(R.id.remindText);
             remindText = editText.getText().toString();
 
             card.cardText(remindText);
@@ -234,7 +235,10 @@ public class AddReminder extends AppCompatActivity {
 
             if (repeat) {
                 if (remindText.isEmpty()) {
-                    Snackbar snackbar = Snackbar.make(this.findViewById(android.R.id.content), "required information missing", Snackbar.LENGTH_SHORT);
+                    Snackbar snackbar = Snackbar.make(this.findViewById(android.R.id.content), R.string.missing_info, Snackbar.LENGTH_SHORT);
+                    snackbar.show();
+                } else if (System.currentTimeMillis() > calendar.getTimeInMillis()) {
+                    Snackbar snackbar = Snackbar.make(this.findViewById(android.R.id.content), R.string.elapsed_time, Snackbar.LENGTH_SHORT);
                     snackbar.show();
                 } else {
                     String quantity_str = quantity_et.getText().toString();
@@ -268,7 +272,10 @@ public class AddReminder extends AppCompatActivity {
                 }
             } else {
                 if (remindText.isEmpty()) {
-                    Snackbar snackbar = Snackbar.make(this.findViewById(android.R.id.content), "required information missing", Snackbar.LENGTH_SHORT);
+                    Snackbar snackbar = Snackbar.make(this.findViewById(android.R.id.content), R.string.missing_info, Snackbar.LENGTH_SHORT);
+                    snackbar.show();
+                } else if (System.currentTimeMillis() > calendar.getTimeInMillis()) {
+                    Snackbar snackbar = Snackbar.make(this.findViewById(android.R.id.content), R.string.elapsed_time, Snackbar.LENGTH_SHORT);
                     snackbar.show();
                 } else {
                     saveInfo("0");
@@ -293,8 +300,12 @@ public class AddReminder extends AppCompatActivity {
                     editor.apply();
                     intentNumber++;
 
-                    alarmMgr.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmIntent);
-                    finish();
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                        alarmMgr.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmIntent);
+                    } else {
+                        Log.d("Test", "" + calendar.getTimeInMillis());
+                        alarmMgr.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmIntent);
+                    }
                 }
             }
         }
@@ -332,7 +343,18 @@ public class AddReminder extends AppCompatActivity {
         }
     }
 
-    public void showDatePickerDialog(View v) {
+    private void addClickListener() {
+
+        SelectedTimeView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Calendar calendar = Calendar.getInstance();
+                int hour = calendar.get(Calendar.HOUR);
+                int minute = calendar.get(Calendar.MINUTE);
+                TimePickerDialog timePickerDialog = new TimePickerDialog(AddReminder.this, onTimeSetListener, hour, minute, false);
+                timePickerDialog.show();
+            }
+        });
 
         SelectedDateView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -346,20 +368,7 @@ public class AddReminder extends AppCompatActivity {
                 datePickerDialog.show();
             }
         });
-    }
 
-    public void showTimePickerDialog(View v) {
-
-        SelectedTimeView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Calendar calendar = Calendar.getInstance();
-                int hour = calendar.get(Calendar.HOUR);
-                int minute = calendar.get(Calendar.MINUTE);
-                TimePickerDialog timePickerDialog = new TimePickerDialog(AddReminder.this, onTimeSetListener, hour, minute, false);
-                timePickerDialog.show();
-            }
-        });
     }
 
     private class modeItemSelectedListener implements AdapterView.OnItemSelectedListener {

@@ -22,14 +22,15 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginTop="8dp"
             card_view:contentPadding="16dp"
-            card_view:theme="@style/CardView.Dark">
+            card_view:theme="@style/ThemeOverlay.AppCompat.Light">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -41,14 +42,14 @@
                     android:layout_height="match_parent"
                     android:layout_marginBottom="15dp">
 
-                    <TextView
+                    <android.support.v7.widget.AppCompatTextView
                         android:id="@+id/date"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
                         android:layout_alignParentStart="true"
                         android:layout_centerVertical="true"
                         android:clickable="true"
-                        android:onClick="showDatePickerDialog"
                         android:text="Date"
                         android:textColor="@color/textPrimary"
                         android:textSize="25sp"
@@ -60,24 +61,24 @@
                         android:layout_centerInParent="true"
                         android:background="@android:color/darker_gray" />
 
-                    <TextView
+                    <android.support.v7.widget.AppCompatTextView
                         android:id="@+id/time"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:clickable="true"
-                        android:onClick="showTimePickerDialog"
                         android:text="Time"
                         android:textColor="@color/textPrimary"
                         android:textSize="25sp"
                         tools:ignore="HardcodedText" />
                 </RelativeLayout>
 
-                <EditText
+                <android.support.v7.widget.AppCompatEditText
                     android:id="@+id/remindText"
                     android:layout_width="match_parent"
-                    android:layout_height="39dp"
+                    android:layout_height="wrap_content"
                     android:hint="@string/reminder_text"
                     android:textColor="@color/textPrimary" />
 
@@ -85,7 +86,8 @@
 
         </android.support.v7.widget.CardView>
 
-        <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
@@ -93,75 +95,87 @@
             android:layout_marginRight="8dp"
             android:layout_marginTop="8dp"
             card_view:contentPadding="16dp"
-            card_view:theme="@style/CardView.Dark">
+            card_view:theme="@style/ThemeOverlay.AppCompat.Light">
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-                <Switch
+                <android.support.v7.widget.SwitchCompat
                     android:id="@+id/repeat_switch"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/repeat"
                     android:drawablePadding="16dp"
                     android:drawableStart="@drawable/repeat"
-                    android:maxLines="2"
                     android:paddingEnd="5dp"
+                    android:paddingLeft="0dp"
+                    android:paddingRight="5dp"
                     android:paddingStart="0dp"
                     android:paddingTop="8dp"
-                    android:switchMinWidth="60dp"
                     android:text="@string/repeat"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    app:switchMinWidth="60dp" />
 
-                <TextView
+                <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/quantity_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/repeat_switch"
+                    android:drawableLeft="@drawable/swap_vertical"
                     android:drawablePadding="16dp"
                     android:drawableStart="@drawable/swap_vertical"
-                    android:paddingEnd="200dp"
+                    android:paddingEnd="@dimen/text_padding1"
+                    android:paddingLeft="0dp"
+                    android:paddingRight="@dimen/text_padding1"
                     android:paddingStart="0dp"
                     android:paddingTop="16dp"
                     android:text="@string/quantity"
                     android:textColor="@color/textPrimary"
                     android:textSize="16sp" />
 
-                <EditText
+                <android.support.v7.widget.AppCompatEditText
                     android:id="@+id/quantity_et"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/repeat_switch"
                     android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp"
                     android:layout_toEndOf="@id/quantity_tv"
+                    android:layout_toRightOf="@+id/quantity_tv"
                     android:gravity="center"
                     android:inputType="number"
                     android:labelFor="@id/quantity_et"
                     android:maxLength="2" />
 
-                <TextView
+                <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/quantity_tv2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/quantity_tv"
+                    android:drawableLeft="@drawable/subject"
                     android:drawablePadding="16dp"
                     android:drawableStart="@drawable/subject"
                     android:paddingBottom="8dp"
-                    android:paddingEnd="215dp"
+                    android:paddingEnd="@dimen/text_padding2"
+                    android:paddingLeft="0dp"
+                    android:paddingRight="@dimen/text_padding2"
                     android:paddingStart="0dp"
                     android:paddingTop="16dp"
                     android:text="@string/mode"
                     android:textColor="@color/textPrimary"
                     android:textSize="16sp" />
 
-                <Spinner
+                <android.support.v7.widget.AppCompatSpinner
                     android:id="@+id/spinner_mode"
+                    style="@style/AppTheme.SpinnerTheme"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/quantity_et"
                     android:layout_marginTop="8dp"
                     android:layout_toEndOf="@+id/quantity_tv2"
+                    android:layout_toRightOf="@+id/quantity_tv2"
                     android:background="@android:color/transparent"
                     android:clickable="true" />
 

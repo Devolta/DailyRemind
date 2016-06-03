@@ -7,4 +7,6 @@
     <string name="quantity">Quantity</string>
     <string name="mode">Mode</string>
     <string name="new_reminder">New Reminder</string>
+    <string name="missing_info">required information missing</string>
+    <string name="elapsed_time">time set is in the past</string>
 </resources>
