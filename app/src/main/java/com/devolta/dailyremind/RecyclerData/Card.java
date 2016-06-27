@@ -1,4 +1,4 @@
-package com.icedex.dailyremind.RecyclerData;
+package com.devolta.dailyremind.RecyclerData;
 
 import java.io.Serializable;
 
@@ -23,10 +23,6 @@ public class Card implements Serializable {
 
     public void cardRemainingTime(String cardRemainingTime) {
         this.cardRemainingTime = cardRemainingTime;
-    }
-
-    public void cardId(int id) {
-        int id1 = id;
     }
 
     public String getCardText() {

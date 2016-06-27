@@ -1,4 +1,4 @@
-package com.icedex.dailyremind;
+package com.devolta.dailyremind;
 
 import android.app.NotificationManager;
 import android.content.Context;
@@ -28,7 +28,7 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
 
         try {
             AudioManager manager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-            manager.setStreamVolume(AudioManager.STREAM_NOTIFICATION, 3, 0);
+            manager.setStreamVolume(AudioManager.STREAM_NOTIFICATION, manager.getStreamVolume(AudioManager.STREAM_NOTIFICATION), 0);
 
             Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
             Ringtone r = RingtoneManager.getRingtone(context, notification);

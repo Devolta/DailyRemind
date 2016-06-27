@@ -1,13 +1,15 @@
-package com.icedex.dailyremind;
+package com.devolta.dailyremind;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.LinearLayoutManager;
@@ -31,8 +33,9 @@ import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.bignerdranch.android.multiselector.ModalMultiSelectorCallback;
 import com.bignerdranch.android.multiselector.MultiSelector;
 import com.bignerdranch.android.multiselector.SwappingHolder;
-import com.icedex.dailyremind.Interfaces.RemoveItem;
-import com.icedex.dailyremind.RecyclerData.Card;
+import com.devolta.dailyremind.Interfaces.RemoveItem;
+import com.devolta.dailyremind.RecyclerData.Card;
+import com.devolta.devoltalibrary.Calculate;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -46,17 +49,23 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 //import com.squareup.leakcanary.LeakCanary;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static final ArrayList<Integer> intentNumber2 = new ArrayList<>();
-    public static ArrayList<Card> cards = new ArrayList<>();
+    static final int updateArraylist = 1;
+    public static List<Integer> intentNumber2 = new ArrayList<>();
     private final SimpleDateFormat sdtf = new SimpleDateFormat("MM/dd/yyyy hh:mm a", Locale.getDefault());
     private final MultiSelector multiSelector = new MultiSelector();
-    public ImageView card_check;
+    private final Calculate calculate = new Calculate();
+    public ArrayList<Card> cards = new ArrayList<>();
+    public SimpleAdapter adapter;
+    public RecyclerView recyclerView;
+    private ImageView card_check;
+    private SwipeRefreshLayout refreshLayout;
     private RemoveItem removeItem;
     // Multi select items in recycler view
     private final android.support.v7.view.ActionMode.Callback mDeleteMode = new ModalMultiSelectorCallback(multiSelector) {
@@ -84,7 +93,9 @@ public class MainActivity extends AppCompatActivity {
                         if (multiSelector.isSelected(i, 0)) {
 
                             Log.d("MAIN", "removing items");
-                            removeItem.remove(i);
+                            if (!cards.isEmpty()) {
+                                removeItem.remove(i);
+                            }
                         }
                     }
                     // Clear selected items in recycler view
@@ -121,89 +132,43 @@ public class MainActivity extends AppCompatActivity {
     private TextView card_tv2;
     private ImageView card_th;
 
-    private static String calculateTimeDifference(long then, long now) {
-        if (then > now) {
-            String timeIndicator;
-            String timeIndicator2;
-            long remainingTime1 = (then - now) / 1000;
+    private void handleArrayList(Context context, int remove) {
 
-            String remainingTime2 = "";
-            long years;
-            long months;
-            long days;
-            long hours;
-            long minutes;
-
-            if (remainingTime1 >= 31556952) {
-                years = remainingTime1 / 31556952;
-                if (years > 1) {
-                    timeIndicator = "years";
-                } else {
-                    timeIndicator = "year";
-                }
-
-                months = remainingTime1 / 2592000 - (years * 12);
-                if (months > 1) {
-                    timeIndicator2 = "months";
-                } else {
-                    timeIndicator2 = "month";
-                }
-                remainingTime2 = years + timeIndicator + " " + months + timeIndicator2;
-            } else if (remainingTime1 >= 2592000) {
-                months = remainingTime1 / 2592000;
-                if (months > 1) {
-                    timeIndicator = "months";
-                } else {
-                    timeIndicator = "month";
-                }
-
-                days = remainingTime1 / 86400 - (months * 30);
-                if (days > 1) {
-                    timeIndicator2 = "days";
-                } else {
-                    timeIndicator2 = "day";
-                }
-                remainingTime2 = months + timeIndicator + " " + days + timeIndicator2;
-            } else if (remainingTime1 >= 86400) {
-                days = remainingTime1 / 86400;
-                if (days > 1) {
-                    timeIndicator2 = "days";
-                } else {
-                    timeIndicator2 = "day";
-                }
-                hours = remainingTime1 / 3600 - (days * 24);
-                remainingTime2 = days + timeIndicator2 + " " + hours + "h";
-            } else if (remainingTime1 >= 3600) {
-                hours = remainingTime1 / 3600;
-                minutes = remainingTime1 / 60 - (hours * 60);
-                remainingTime2 = hours + "h " + minutes + "min";
-            } else if (remainingTime1 >= 60) {
-                minutes = remainingTime1 / 60;
-                remainingTime2 = minutes + "min";
-            }
-
-            return remainingTime2 + " remaining";
-        } else
-            return "error";
-    }
-
-    private static void handleArrayList(Context context, int remove) {
 
         if (remove == 0) {
             if (cards.isEmpty()) {
                 try {
-                    String path = context.getFilesDir().getAbsolutePath() + "/" + "Reminder";
+                    String path = context.getFilesDir().getAbsolutePath() + "/" + "Arraylist 1";
                     File file = new File(path);
                     if (file.exists()) {
                         FileInputStream fileInputStream;
-                        fileInputStream = context.openFileInput("Reminder");
+                        fileInputStream = context.openFileInput("Arraylist 1");
                         ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
                         try {
-                            @SuppressWarnings("unchecked")
-                            ArrayList<Card> returnList = (ArrayList<Card>) objectInputStream.readObject();
+                            int size = objectInputStream.readInt();
+                            for (int i = 0; i <= size; i++) {
+                                Card card = (Card) objectInputStream.readObject();
+                                cards.add(card);
+                            }
                             objectInputStream.close();
-                            cards = returnList;
-                        } catch (ClassCastException e) {
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                try {
+                    String path = context.getFilesDir().getAbsolutePath() + "/" + "Arraylist 2";
+                    File file = new File(path);
+                    if (file.exists()) {
+                        FileInputStream fileInputStream;
+                        fileInputStream = context.openFileInput("Arraylist 2");
+                        ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+                        try {
+                            intentNumber2 = (List<Integer>) objectInputStream.readObject();
+                            objectInputStream.close();
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
@@ -213,9 +178,21 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 try {
                     FileOutputStream fileOutputStream;
-                    fileOutputStream = context.openFileOutput("Reminder", Context.MODE_PRIVATE);
+                    fileOutputStream = context.openFileOutput("Arraylist 1", Context.MODE_PRIVATE);
                     ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-                    objectOutputStream.writeObject(cards);
+                    objectOutputStream.writeInt(cards.size());
+                    for (Card card : cards) {
+                        objectOutputStream.writeObject(card);
+                    }
+                    objectOutputStream.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                try {
+                    FileOutputStream fileOutputStream;
+                    fileOutputStream = context.openFileOutput("Arraylist 2", Context.MODE_PRIVATE);
+                    ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+                    objectOutputStream.writeObject(intentNumber2);
                     objectOutputStream.close();
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -224,15 +201,17 @@ public class MainActivity extends AppCompatActivity {
         } else {
             try {
                 FileOutputStream fileOutputStream;
-                fileOutputStream = context.openFileOutput("Reminder", Context.MODE_PRIVATE);
+                fileOutputStream = context.openFileOutput("Arraylist 1", Context.MODE_PRIVATE);
                 ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-                objectOutputStream.writeObject(cards);
+                objectOutputStream.writeInt(cards.size());
+                for (Card card : cards) {
+                    objectOutputStream.writeObject(card);
+                }
                 objectOutputStream.close();
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-
 
     }
 
@@ -252,14 +231,17 @@ public class MainActivity extends AppCompatActivity {
             window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
         }
 
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.rv);
+        handleArrayList(getApplicationContext(), 0);
+        Log.d("Arraylist", "" + intentNumber2.size());
+
+        recyclerView = (RecyclerView) findViewById(R.id.rv);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setItemAnimator(null);
+        recyclerView.setHasFixedSize(true);
 
-        handleArrayList(getApplicationContext(), 0);
-
-        SimpleAdapter adapter = new SimpleAdapter();
+        adapter = new SimpleAdapter();
 
         recyclerView.addItemDecoration(new SimpleDividerItemDecoration(this));
         recyclerView.setAdapter(adapter);
@@ -269,35 +251,40 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getBaseContext(), AddReminder.class);
-                startActivity(intent);
+                Bundle b = new Bundle();
+                b.putSerializable("cards", cards);
+                intent.putExtras(b);
+                startActivityForResult(intent, updateArraylist);
             }
         });
 
-        adapter.notifyItemInserted(cards.size() - 1);
+        refreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
 
-        if (cards != null && cards.size() != 0) {
-            for (int i = cards.size() - 1; i >= 0; i--) {
-                updateRemainingTime(i);
+        new updateRemainingTime().execute();
 
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                new updateRemainingTime().execute();
             }
-        }
+        });
+        refreshLayout.setColorSchemeResources(R.color.orange, R.color.green, R.color.blue, R.color.purple);
     }
 
-    //refresh the time remaining on the cards
-    private void updateRemainingTime(int position) {
-        Card card = cards.get(position);
-        String time = card.getCardTime();
-        String date = card.getCardDate();
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Check which request we're responding to
+        if (requestCode == 1) {
 
-        Date now = new Date();
-        Date then = null;
-        try {
-            then = sdtf.parse(date + " " + time);
-        } catch (ParseException e) {
-            Log.d("PARSEEXCEPTION:", " " + e);
+            if (resultCode == RESULT_OK) {
+                Bundle b = data.getExtras();
+                cards = (ArrayList<Card>) b.getSerializable("cards");
+                adapter.notifyItemInserted(cards.size() - 1);
+                handleArrayList(getApplicationContext(), 0);
+            } else {
+                Log.e("Error", "updating Arraylist failed");
+            }
         }
-        String remainingTime = calculateTimeDifference(then.getTime(), now.getTime());
-        card.cardRemainingTime(remainingTime);
     }
 
     @Override
@@ -306,6 +293,38 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
+
+    /*
+    //refresh the time remaining on the cards
+    private void updateRemainingTime() {
+
+        if (!cards.isEmpty()) {
+
+            for (int i = cards.size() - 1; i >= 0; i--) {
+                Card card = cards.get(i);
+
+                String time = card.getCardTime();
+                String date = card.getCardDate();
+
+                Date now = new Date();
+                Date then = null;
+                try {
+                    then = sdtf.parse(date + " " + time);
+                } catch (ParseException e) {
+                    Log.d("PARSEEXCEPTION:", " " + e);
+                }
+
+                String remainingTime = calculate.calcTimeDiff(then.getTime(), now.getTime());
+                Log.d("Card", "Card updated " + remainingTime);
+                cards.get(i).cardRemainingTime(remainingTime);
+            }
+            adapter.notifyDataSetChanged();
+            refreshLayout.setRefreshing(false);
+        } else {
+            refreshLayout.setRefreshing(false);
+        }
+    }
+    */
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -322,6 +341,51 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public class updateRemainingTime extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            try {
+                for (int i = cards.size() - 1; i >= 0; i--) {
+                    Card card = cards.get(i);
+
+                    String time = card.getCardTime();
+                    String date = card.getCardDate();
+
+                    Date now = new Date();
+                    Date then = null;
+                    try {
+                        then = sdtf.parse(date + " " + time);
+                    } catch (ParseException e) {
+                        Log.d("PARSEEXCEPTION:", " " + e);
+                    }
+
+                    String remainingTime = calculate.calcTimeDiff(then.getTime(), now.getTime());
+                    Log.d("Card", "Card updated " + remainingTime);
+                    cards.get(i).cardRemainingTime(remainingTime);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+            adapter = new SimpleAdapter();
+            recyclerView.setAdapter(adapter);
+            adapter.notifyDataSetChanged();
+            refreshLayout.setRefreshing(false);
+        }
+    }
+
     public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.ViewHolder> implements RemoveItem {
 
         @Override
@@ -335,12 +399,9 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
             Card card = cards.get(position);
-
             holder.setReminderText(card.getCardText());
             card_tv2.setText(card.getCardRemainingTime());
             holder.setSelectable(true);
-
-            card.cardId(position);
         }
 
         @Override
@@ -351,7 +412,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void remove(int position) {
             cards.remove(position);
-            Log.d("Main", "" + position);
+            Log.d("Main", "removed " + position);
             notifyItemRemoved(position);
             notifyItemRangeChanged(position, cards.size());
 
@@ -372,7 +433,7 @@ public class MainActivity extends AppCompatActivity {
             File file = new File(dir, "Reminder" + " " + position);
             boolean deleted = file.delete();
 
-            MainActivity.handleArrayList(getApplicationContext(), 1);
+            handleArrayList(getApplicationContext(), 1);
         }
 
         public class ViewHolder extends SwappingHolder implements View.OnClickListener, View.OnLongClickListener {
@@ -438,7 +499,7 @@ public class MainActivity extends AppCompatActivity {
                     intent2.putExtra("REPEAT", repeat2);
                     intent2.putExtra("QUANTITY", quantity);
                     intent2.putExtra("MODE", mode);
-                    startActivity(intent2);
+                    startActivityForResult(intent2, updateArraylist);
 
                 }
             }

@@ -1,4 +1,4 @@
-package com.icedex.dailyremind;
+package com.devolta.dailyremind;
 
 import android.content.Context;
 import android.content.res.TypedArray;

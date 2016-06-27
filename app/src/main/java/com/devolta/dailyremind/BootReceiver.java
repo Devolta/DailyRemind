@@ -1,4 +1,4 @@
-package com.icedex.dailyremind;
+package com.devolta.dailyremind;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -9,7 +9,7 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.util.Log;
 
-import com.icedex.dailyremind.RecyclerData.Card;
+import com.devolta.dailyremind.RecyclerData.Card;
 
 import java.util.ArrayList;
 import java.util.Calendar;

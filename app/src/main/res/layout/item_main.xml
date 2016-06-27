@@ -12,8 +12,8 @@
 
     <ImageView
         android:id="@+id/thumbnail"
-        android:layout_width="46dp"
-        android:layout_height="46dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_gravity="center"
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
