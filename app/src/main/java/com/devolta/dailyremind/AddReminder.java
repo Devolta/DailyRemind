@@ -53,8 +53,8 @@ public class AddReminder extends AppCompatActivity {
     private static final List<Integer> intentNumber2 = MainActivity.intentNumber2;
     private final Calculate calculate = new Calculate();
     private final SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault());
-    private final SimpleDateFormat stf = new SimpleDateFormat("hh:mm a", Locale.getDefault());
     private final Calendar calendar = Calendar.getInstance();
+    private SimpleDateFormat stf;
     private ArrayList<Card> cards;
     private String remindText;
     private AutofitTextView SelectedDateView;
@@ -88,6 +88,7 @@ public class AddReminder extends AppCompatActivity {
     private int day;
     private boolean repeat;
     private long repeat_quantity;
+    private boolean is24Hour = false;
     private AppCompatSpinner spinner_mode;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,6 +104,16 @@ public class AddReminder extends AppCompatActivity {
         spinner_mode = (AppCompatSpinner) findViewById(R.id.spinner_mode);
         quantity_et = (AppCompatEditText) findViewById(R.id.quantity_et);
 
+        android.text.format.DateFormat dateFormat = new android.text.format.DateFormat();
+
+        if (!dateFormat.is24HourFormat(this)) {
+            stf = new SimpleDateFormat("hh:mm a", Locale.getDefault());
+            is24Hour = false;
+        } else {
+            stf = new SimpleDateFormat("HH:mm", Locale.getDefault());
+            is24Hour = true;
+        }
+
         SelectedDateView.setText(sdf.format(calendar.getTime()));
 
         SelectedTimeView.setText(stf.format(calendar.getTime()));
@@ -110,7 +121,7 @@ public class AddReminder extends AppCompatActivity {
         Bundle b = this.getIntent().getExtras();
         cards = (ArrayList<Card>) b.getSerializable("cards");
 
-        addClickListener();
+        addClickListener(is24Hour);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
@@ -290,7 +301,7 @@ public class AddReminder extends AppCompatActivity {
         }
     }
 
-    private void addClickListener() {
+    private void addClickListener(final boolean is24hour) {
 
         SelectedTimeView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -298,7 +309,7 @@ public class AddReminder extends AppCompatActivity {
                 Calendar calendar = Calendar.getInstance();
                 int hour = calendar.get(Calendar.HOUR);
                 int minute = calendar.get(Calendar.MINUTE);
-                TimePickerDialog timePickerDialog = new TimePickerDialog(AddReminder.this, onTimeSetListener, hour, minute, false);
+                TimePickerDialog timePickerDialog = new TimePickerDialog(AddReminder.this, onTimeSetListener, hour, minute, is24hour);
                 timePickerDialog.show();
             }
         });

@@ -18,169 +18,146 @@
         android:theme="@style/AppTheme.AppBarOverlay"
         app:popupTheme="@style/AppTheme.PopupOverlay" />
 
-        <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:card_view="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/card_view1"
+    <RelativeLayout
+        android:id="@+id/layout1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar2"
+        android:layout_margin="8dp"
+        android:paddingTop="8dp">
+
+        <me.grantland.widget.AutofitTextView
+            android:id="@+id/date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/separation"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignRight="@+id/separation"
+            android:clickable="true"
+            android:gravity="center_horizontal"
+            android:singleLine="true"
+            android:text="Date"
+            android:textColor="@color/textPrimary"
+            android:textSize="25sp"
+            autofit:minTextSize="16sp"
+            tools:ignore="HardcodedText" />
+
+        <View
+            android:id="@+id/separation"
+            android:layout_width="1dp"
+            android:layout_height="32sp"
+            android:layout_centerHorizontal="true"
+            android:background="@android:color/darker_gray" />
+
+        <me.grantland.widget.AutofitTextView
+            android:id="@+id/time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/separation"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignStart="@+id/separation"
+            android:clickable="true"
+            android:gravity="center"
+            android:singleLine="true"
+            android:text="Time"
+            android:textColor="@color/textPrimary"
+            android:textSize="25sp"
+            autofit:minTextSize="16sp"
+            tools:ignore="HardcodedText" />
+
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/remindText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/toolbar2"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginTop="8dp"
-            card_view:contentPadding="16dp"
-            card_view:theme="@style/ThemeOverlay.AppCompat.Light">
+            android:layout_below="@+id/date"
+            android:hint="@string/reminder_text"
+            android:paddingTop="24dp"
+            android:textColor="@color/textPrimary" />
 
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <me.grantland.widget.AutofitTextView
-                        android:id="@+id/date"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignEnd="@+id/separation"
-                        android:layout_alignRight="@+id/separation"
-                        android:layout_marginEnd="32dp"
-                        android:layout_marginRight="32dp"
-                        android:clickable="true"
-                        android:singleLine="true"
-                        android:text="Date"
-                        android:textColor="@color/textPrimary"
-                        android:textSize="25sp"
-                        autofit:minTextSize="16sp"
-                        tools:ignore="HardcodedText" />
-
-                    <View
-                        android:id="@+id/separation"
-                        android:layout_width="1dp"
-                        android:layout_height="32sp"
-                        android:layout_centerHorizontal="true"
-                        android:background="@android:color/darker_gray" />
-
-                    <me.grantland.widget.AutofitTextView
-                        android:id="@+id/time"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignLeft="@+id/separation"
-                        android:layout_alignStart="@+id/separation"
-                        android:layout_marginLeft="32dp"
-                        android:layout_marginStart="32dp"
-                        android:clickable="true"
-                        android:singleLine="true"
-                        android:text="Time"
-                        android:textColor="@color/textPrimary"
-                        android:textSize="25sp"
-                        autofit:minTextSize="16sp"
-                        tools:ignore="HardcodedText" />
-
-                    <android.support.v7.widget.AppCompatEditText
-                        android:id="@+id/remindText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/date"
-                        android:hint="@string/reminder_text"
-                        android:paddingTop="16dp"
-                        android:textColor="@color/textPrimary" />
-                </RelativeLayout>
-
-        </android.support.v7.widget.CardView>
-
-        <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/repeat_switch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/card_view1"
-            android:layout_marginBottom="8dp"
-            android:layout_marginLeft="8dp"
+            android:layout_below="@+id/remindText"
+            android:drawableLeft="@drawable/repeat"
+            android:drawablePadding="24dp"
+            android:drawableStart="@drawable/repeat"
+            android:paddingEnd="5dp"
+            android:paddingLeft="0dp"
+            android:paddingRight="5dp"
+            android:paddingStart="0dp"
+            android:paddingTop="24dp"
+            android:text="@string/repeat"
+            android:textSize="16sp"
+            app:switchMinWidth="60dp" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/quantity_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/repeat_switch"
+            android:drawableLeft="@drawable/swap_vertical"
+            android:drawablePadding="24dp"
+            android:drawableStart="@drawable/swap_vertical"
+            android:gravity="center_vertical"
+            android:paddingEnd="@dimen/text_padding1"
+            android:paddingLeft="0dp"
+            android:paddingRight="@dimen/text_padding1"
+            android:paddingStart="0dp"
+            android:paddingTop="16dp"
+            android:text="@string/quantity"
+            android:textColor="@color/textPrimary"
+            android:textSize="16sp" />
+
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/quantity_et"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/repeat_switch"
+            android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
-            android:layout_marginTop="8dp"
-            card_view:contentPadding="16dp"
-            card_view:theme="@style/ThemeOverlay.AppCompat.Light">
+            android:layout_toEndOf="@id/quantity_tv"
+            android:layout_toRightOf="@+id/quantity_tv"
+            android:gravity="center"
+            android:inputType="number"
+            android:labelFor="@id/quantity_et"
+            android:maxLength="2" />
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/quantity_tv2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/quantity_tv"
+            android:drawableLeft="@drawable/subject"
+            android:drawablePadding="24dp"
+            android:drawableStart="@drawable/subject"
+            android:gravity="center_vertical"
+            android:paddingBottom="8dp"
+            android:paddingEnd="@dimen/text_padding1"
+            android:paddingLeft="0dp"
+            android:paddingRight="@dimen/text_padding1"
+            android:paddingStart="0dp"
+            android:paddingTop="16dp"
+            android:text="@string/mode"
+            android:textColor="@color/textPrimary"
+            android:textSize="16sp" />
 
-                <android.support.v7.widget.SwitchCompat
-                    android:id="@+id/repeat_switch"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/repeat"
-                    android:drawablePadding="16dp"
-                    android:drawableStart="@drawable/repeat"
-                    android:paddingEnd="5dp"
-                    android:paddingLeft="0dp"
-                    android:paddingRight="5dp"
-                    android:paddingStart="0dp"
-                    android:paddingTop="8dp"
-                    android:text="@string/repeat"
-                    android:textSize="16sp"
-                    app:switchMinWidth="60dp" />
+        <android.support.v7.widget.AppCompatSpinner
+            android:id="@+id/spinner_mode"
+            style="@style/AppTheme.SpinnerTheme"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/quantity_tv2"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/quantity_et"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:background="@android:color/transparent"
+            android:clickable="true" />
 
-                <android.support.v7.widget.AppCompatTextView
-                    android:id="@+id/quantity_tv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/repeat_switch"
-                    android:drawableLeft="@drawable/swap_vertical"
-                    android:drawablePadding="16dp"
-                    android:drawableStart="@drawable/swap_vertical"
-                    android:paddingEnd="@dimen/text_padding1"
-                    android:paddingLeft="0dp"
-                    android:paddingRight="@dimen/text_padding1"
-                    android:paddingStart="0dp"
-                    android:paddingTop="16dp"
-                    android:text="@string/quantity"
-                    android:textColor="@color/textPrimary"
-                    android:textSize="16sp" />
-
-                <android.support.v7.widget.AppCompatEditText
-                    android:id="@+id/quantity_et"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/repeat_switch"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginRight="8dp"
-                    android:layout_toEndOf="@id/quantity_tv"
-                    android:layout_toRightOf="@+id/quantity_tv"
-                    android:gravity="center"
-                    android:inputType="number"
-                    android:labelFor="@id/quantity_et"
-                    android:maxLength="2" />
-
-                <android.support.v7.widget.AppCompatTextView
-                    android:id="@+id/quantity_tv2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/quantity_tv"
-                    android:drawableLeft="@drawable/subject"
-                    android:drawablePadding="16dp"
-                    android:drawableStart="@drawable/subject"
-                    android:paddingBottom="8dp"
-                    android:paddingEnd="@dimen/text_padding2"
-                    android:paddingLeft="0dp"
-                    android:paddingRight="@dimen/text_padding2"
-                    android:paddingStart="0dp"
-                    android:paddingTop="16dp"
-                    android:text="@string/mode"
-                    android:textColor="@color/textPrimary"
-                    android:textSize="16sp" />
-
-                <android.support.v7.widget.AppCompatSpinner
-                    android:id="@+id/spinner_mode"
-                    style="@style/AppTheme.SpinnerTheme"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/quantity_et"
-                    android:layout_marginTop="8dp"
-                    android:layout_toEndOf="@+id/quantity_tv2"
-                    android:layout_toRightOf="@+id/quantity_tv2"
-                    android:background="@android:color/transparent"
-                    android:clickable="true" />
-
-            </RelativeLayout>
-
-        </android.support.v7.widget.CardView>
+    </RelativeLayout>
 
 </RelativeLayout>

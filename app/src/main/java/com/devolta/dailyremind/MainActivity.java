@@ -58,12 +58,12 @@ public class MainActivity extends AppCompatActivity {
 
     static final int updateArraylist = 1;
     public static List<Integer> intentNumber2 = new ArrayList<>();
-    private final SimpleDateFormat sdtf = new SimpleDateFormat("MM/dd/yyyy hh:mm a", Locale.getDefault());
     private final MultiSelector multiSelector = new MultiSelector();
     private final Calculate calculate = new Calculate();
     public ArrayList<Card> cards = new ArrayList<>();
     public SimpleAdapter adapter;
     public RecyclerView recyclerView;
+    private SimpleDateFormat sdtf;
     private ImageView card_check;
     private SwipeRefreshLayout refreshLayout;
     private RemoveItem removeItem;
@@ -258,6 +258,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        android.text.format.DateFormat dateFormat = new android.text.format.DateFormat();
+
+        if (!dateFormat.is24HourFormat(this)) {
+            sdtf = new SimpleDateFormat("MM/dd/yyyy hh:mm a", Locale.getDefault());
+        } else {
+            sdtf = new SimpleDateFormat("MM/dd/yyyy HH:mm", Locale.getDefault());
+        }
+
         refreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
 
         new updateRemainingTime().execute();
@@ -293,38 +301,6 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
-
-    /*
-    //refresh the time remaining on the cards
-    private void updateRemainingTime() {
-
-        if (!cards.isEmpty()) {
-
-            for (int i = cards.size() - 1; i >= 0; i--) {
-                Card card = cards.get(i);
-
-                String time = card.getCardTime();
-                String date = card.getCardDate();
-
-                Date now = new Date();
-                Date then = null;
-                try {
-                    then = sdtf.parse(date + " " + time);
-                } catch (ParseException e) {
-                    Log.d("PARSEEXCEPTION:", " " + e);
-                }
-
-                String remainingTime = calculate.calcTimeDiff(then.getTime(), now.getTime());
-                Log.d("Card", "Card updated " + remainingTime);
-                cards.get(i).cardRemainingTime(remainingTime);
-            }
-            adapter.notifyDataSetChanged();
-            refreshLayout.setRefreshing(false);
-        } else {
-            refreshLayout.setRefreshing(false);
-        }
-    }
-    */
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
