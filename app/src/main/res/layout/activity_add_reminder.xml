@@ -84,10 +84,6 @@
             android:drawableLeft="@drawable/repeat"
             android:drawablePadding="24dp"
             android:drawableStart="@drawable/repeat"
-            android:paddingEnd="5dp"
-            android:paddingLeft="0dp"
-            android:paddingRight="5dp"
-            android:paddingStart="0dp"
             android:paddingTop="24dp"
             android:text="@string/repeat"
             android:textSize="16sp"
@@ -102,10 +98,6 @@
             android:drawablePadding="24dp"
             android:drawableStart="@drawable/swap_vertical"
             android:gravity="center_vertical"
-            android:paddingEnd="@dimen/text_padding1"
-            android:paddingLeft="0dp"
-            android:paddingRight="@dimen/text_padding1"
-            android:paddingStart="0dp"
             android:paddingTop="16dp"
             android:text="@string/quantity"
             android:textColor="@color/textPrimary"
@@ -113,17 +105,18 @@
 
         <android.support.v7.widget.AppCompatEditText
             android:id="@+id/quantity_et"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/quantity_tv"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
             android:layout_below="@id/repeat_switch"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
-            android:layout_toEndOf="@id/quantity_tv"
-            android:layout_toRightOf="@+id/quantity_tv"
             android:gravity="center"
             android:inputType="number"
-            android:labelFor="@id/quantity_et"
-            android:maxLength="2" />
+            android:maxLength="2"
+            android:minWidth="45dp" />
 
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/quantity_tv2"
@@ -135,10 +128,6 @@
             android:drawableStart="@drawable/subject"
             android:gravity="center_vertical"
             android:paddingBottom="8dp"
-            android:paddingEnd="@dimen/text_padding1"
-            android:paddingLeft="0dp"
-            android:paddingRight="@dimen/text_padding1"
-            android:paddingStart="0dp"
             android:paddingTop="16dp"
             android:text="@string/mode"
             android:textColor="@color/textPrimary"
@@ -153,8 +142,6 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_below="@+id/quantity_et"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
             android:background="@android:color/transparent"
             android:clickable="true" />
 
