@@ -15,6 +15,7 @@ import android.support.v7.view.ActionMode;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -56,13 +57,13 @@ import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
-    static final int updateArraylist = 1;
+    private static final int updateArraylist = 1;
     public static List<Integer> intentNumber2 = new ArrayList<>();
     private final MultiSelector multiSelector = new MultiSelector();
     private final Calculate calculate = new Calculate();
-    public ArrayList<Card> cards = new ArrayList<>();
-    public SimpleAdapter adapter;
-    public RecyclerView recyclerView;
+    private ArrayList<Card> cards = new ArrayList<>();
+    private SimpleAdapter adapter;
+    private RecyclerView recyclerView;
     private SimpleDateFormat sdtf;
     private ImageView card_check;
     private SwipeRefreshLayout refreshLayout;
@@ -258,9 +259,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        android.text.format.DateFormat dateFormat = new android.text.format.DateFormat();
-
-        if (!dateFormat.is24HourFormat(this)) {
+        if (!DateFormat.is24HourFormat(this)) {
             sdtf = new SimpleDateFormat("MM/dd/yyyy hh:mm a", Locale.getDefault());
         } else {
             sdtf = new SimpleDateFormat("MM/dd/yyyy HH:mm", Locale.getDefault());
@@ -289,6 +288,7 @@ public class MainActivity extends AppCompatActivity {
                 cards = (ArrayList<Card>) b.getSerializable("cards");
                 adapter.notifyItemInserted(cards.size() - 1);
                 handleArrayList(getApplicationContext(), 0);
+                DailyRemindWidgetProvider.setCards(cards);
             } else {
                 Log.e("Error", "updating Arraylist failed");
             }
@@ -317,13 +317,7 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public class updateRemainingTime extends AsyncTask<Void, Void, Void> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-        }
+    private class updateRemainingTime extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected Void doInBackground(Void... params) {
@@ -340,11 +334,13 @@ public class MainActivity extends AppCompatActivity {
                         then = sdtf.parse(date + " " + time);
                     } catch (ParseException e) {
                         Log.d("PARSEEXCEPTION:", " " + e);
+                        return null;
                     }
 
                     String remainingTime = calculate.calcTimeDiff(then.getTime(), now.getTime());
                     Log.d("Card", "Card updated " + remainingTime);
                     cards.get(i).cardRemainingTime(remainingTime);
+                    DailyRemindWidgetProvider.setCards(cards);
                 }
             } catch (Exception e) {
                 e.printStackTrace();

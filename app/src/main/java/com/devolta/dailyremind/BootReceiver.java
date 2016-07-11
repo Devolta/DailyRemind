@@ -16,7 +16,7 @@ import java.util.Calendar;
 
 public class BootReceiver extends BroadcastReceiver {
 
-    public static ArrayList<Card> cards = new ArrayList<>();
+    private final ArrayList<Card> cards = new ArrayList<>();
 
     @Override
     public void onReceive(Context context, Intent intent) {

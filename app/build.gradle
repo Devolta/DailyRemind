@@ -18,7 +18,6 @@ android {
         }
     }
     dexOptions {
-        incremental true
         javaMaxHeapSize "12g"
     }
 }
@@ -30,7 +29,6 @@ dependencies {
     compile 'com.android.support:cardview-v7:24.0.0'
     compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
     compile 'me.grantland:autofittextview:0.2.1'
-    //debugCompile 'com.squareup.leakcanary:leakcanary-android:1.4-SNAPSHOT'
     compile project(':recyclerview-multiselect')
     compile project(':com.devolta.devoltalibrary')
 }

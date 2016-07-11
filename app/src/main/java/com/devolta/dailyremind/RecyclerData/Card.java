@@ -8,6 +8,7 @@ public class Card implements Serializable {
     private String cardDate;
     private String cardTime;
     private String cardRemainingTime;
+    private long cardRemainingTimeLong;
 
     public void cardText(String cardText) {
         this.cardText = cardText;
@@ -23,6 +24,10 @@ public class Card implements Serializable {
 
     public void cardRemainingTime(String cardRemainingTime) {
         this.cardRemainingTime = cardRemainingTime;
+    }
+
+    public void cardRemainingTimeLong(long cardRemainingTimeLong) {
+        this.cardRemainingTimeLong = cardRemainingTimeLong;
     }
 
     public String getCardText() {

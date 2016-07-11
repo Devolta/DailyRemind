@@ -16,6 +16,7 @@ import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -82,7 +83,6 @@ public class ChangeReminder extends AppCompatActivity {
     private int month;
     private int day;
     private boolean repeat;
-    private boolean is24Hour = false;
     private long repeat_quantity;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,9 +106,8 @@ public class ChangeReminder extends AppCompatActivity {
         repeat_switch.setChecked(getIntent().getBooleanExtra("REPEAT", false));
         Log.d("Switch", "" + getIntent().getBooleanExtra("REPEAT", false));
 
-        android.text.format.DateFormat dateFormat = new android.text.format.DateFormat();
-
-        if (!dateFormat.is24HourFormat(this)) {
+        boolean is24Hour;
+        if (!DateFormat.is24HourFormat(this)) {
             stf = new SimpleDateFormat("hh:mm a", Locale.getDefault());
             is24Hour = false;
         } else {

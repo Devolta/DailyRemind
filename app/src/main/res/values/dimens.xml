@@ -2,5 +2,4 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="fab_margin">16dp</dimen>
-    <dimen name="text_padding1">140dp</dimen>
 </resources>

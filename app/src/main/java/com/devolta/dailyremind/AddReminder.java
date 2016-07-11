@@ -17,6 +17,7 @@ import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -88,7 +89,6 @@ public class AddReminder extends AppCompatActivity {
     private int day;
     private boolean repeat;
     private long repeat_quantity;
-    private boolean is24Hour = false;
     private AppCompatSpinner spinner_mode;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,9 +104,8 @@ public class AddReminder extends AppCompatActivity {
         spinner_mode = (AppCompatSpinner) findViewById(R.id.spinner_mode);
         quantity_et = (AppCompatEditText) findViewById(R.id.quantity_et);
 
-        android.text.format.DateFormat dateFormat = new android.text.format.DateFormat();
-
-        if (!dateFormat.is24HourFormat(this)) {
+        boolean is24Hour;
+        if (!DateFormat.is24HourFormat(this)) {
             stf = new SimpleDateFormat("hh:mm a", Locale.getDefault());
             is24Hour = false;
         } else {
