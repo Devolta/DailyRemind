@@ -9,4 +9,5 @@
     <string name="new_reminder">Neue Erinnerung</string>
     <string name="missing_info">benötigte Informationen fehlen</string>
     <string name="elapsed_time">gesetzte Zeit ist in der Vergangenheit</string>
+    <string name="no_alarm_text">keine vorliegenden Alarme</string>
 </resources>
