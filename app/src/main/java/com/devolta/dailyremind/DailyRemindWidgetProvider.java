@@ -25,7 +25,6 @@ public class DailyRemindWidgetProvider extends AppWidgetProvider {
 
     private static ArrayList<Card> cards = new ArrayList<>();
     private final Calculate calculate = new Calculate();
-    private SimpleDateFormat sdtf;
 
     //retrieve cards Arraylist
     static void setCards(ArrayList<Card> data) {
@@ -43,6 +42,7 @@ public class DailyRemindWidgetProvider extends AppWidgetProvider {
             Log.d("WIDGET", "Update called");
             if (!cards.isEmpty()) {
 
+                SimpleDateFormat sdtf;
                 if (!DateFormat.is24HourFormat(context)) {
                     sdtf = new SimpleDateFormat("MM/dd/yyyy hh:mm a", Locale.getDefault());
                 } else {

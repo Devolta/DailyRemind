@@ -14,9 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
-        android:elevation="4dp"
-        android:theme="@style/AppTheme.AppBarOverlay"
-        app:popupTheme="@style/AppTheme.PopupOverlay" />
+        android:elevation="4dp" />
 
     <RelativeLayout
         android:id="@+id/layout1"
@@ -38,7 +36,7 @@
             android:gravity="center_horizontal"
             android:maxLines="1"
             android:text="Date"
-            android:textColor="@color/textPrimary"
+            android:textColor="?android:attr/textColorPrimary"
             android:textSize="25sp"
             autofit:minTextSize="16sp"
             tools:ignore="HardcodedText" />
@@ -62,7 +60,7 @@
             android:gravity="center"
             android:maxLines="1"
             android:text="Time"
-            android:textColor="@color/textPrimary"
+            android:textColor="?android:attr/textColorPrimary"
             android:textSize="25sp"
             autofit:minTextSize="16sp"
             tools:ignore="HardcodedText" />
@@ -74,7 +72,7 @@
             android:layout_below="@+id/date"
             android:hint="@string/reminder_text"
             android:paddingTop="24dp"
-            android:textColor="@color/textPrimary" />
+            android:textColor="?android:attr/textColorPrimary" />
 
         <android.support.v7.widget.SwitchCompat
             android:id="@+id/repeat_switch"
@@ -100,7 +98,7 @@
             android:gravity="center_vertical"
             android:paddingTop="16dp"
             android:text="@string/quantity"
-            android:textColor="@color/textPrimary"
+            android:textColor="?android:attr/textColorPrimary"
             android:textSize="16sp" />
 
         <android.support.v7.widget.AppCompatEditText
@@ -116,7 +114,8 @@
             android:gravity="center"
             android:inputType="number"
             android:maxLength="2"
-            android:minWidth="45dp" />
+            android:minWidth="45dp"
+            android:textColor="?android:attr/textColorPrimary" />
 
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/quantity_tv2"
@@ -130,7 +129,7 @@
             android:paddingBottom="8dp"
             android:paddingTop="16dp"
             android:text="@string/mode"
-            android:textColor="@color/textPrimary"
+            android:textColor="?android:attr/textColorPrimary"
             android:textSize="16sp" />
 
         <android.support.v7.widget.AppCompatSpinner

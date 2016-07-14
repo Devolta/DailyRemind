@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="auto_night_switch"
+        android:summary="@string/auto_night_desc"
+        android:title="@string/auto_night_title" />
+
+    <ListPreference
+        android:defaultValue="day"
+        android:entries="@array/Themes"
+        android:entryValues="@array/ThemesData"
+        android:key="theme_pref"
+        android:summary="@string/theme_desc"
+        android:title="@string/theme_title"
+        app:asp_menuMode="dialog" />
+
+
+</PreferenceScreen>

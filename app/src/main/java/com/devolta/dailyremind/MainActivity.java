@@ -4,6 +4,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -11,6 +12,8 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.preference.PreferenceManager;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -53,7 +56,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-//import com.squareup.leakcanary.LeakCanary;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -216,13 +218,42 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void setAutoNightMode(Bundle savedInstanceState) {
+        if (savedInstanceState == null) {
+
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+            String theme = prefs.getString("theme_pref", null);
+            boolean autoNightMode = prefs.getBoolean("auto_night_mode", false);
+
+            if (theme != null) {
+                if (theme.contentEquals("day")) {
+                    getDelegate().setLocalNightMode(
+                            AppCompatDelegate.MODE_NIGHT_NO);
+                    recreate();
+                } else {
+                    getDelegate().setLocalNightMode(
+                            AppCompatDelegate.MODE_NIGHT_YES);
+                    recreate();
+                }
+            } else if (autoNightMode) {
+                getDelegate().setLocalNightMode(
+                        AppCompatDelegate.MODE_NIGHT_AUTO);
+                recreate();
+            } else {
+                getDelegate().setLocalNightMode(
+                        AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+                recreate();
+            }
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        //LeakCanary.install(this.getApplication());
-
         setContentView(R.layout.activity_main);
+
+        setAutoNightMode(savedInstanceState);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -311,7 +342,8 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);
@@ -329,7 +361,7 @@ public class MainActivity extends AppCompatActivity {
                     String date = card.getCardDate();
 
                     Date now = new Date();
-                    Date then = null;
+                    Date then;
                     try {
                         then = sdtf.parse(date + " " + time);
                     } catch (ParseException e) {

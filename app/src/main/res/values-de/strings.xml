@@ -10,4 +10,8 @@
     <string name="missing_info">benötigte Informationen fehlen</string>
     <string name="elapsed_time">gesetzte Zeit ist in der Vergangenheit</string>
     <string name="no_alarm_text">keine vorliegenden Alarme</string>
+    <string name="auto_night_title">Automatischer Nacht Modus</string>
+    <string name="auto_night_desc">Ändert automatisch zu einem dunklem Theme am Abend</string>
+    <string name="theme_title">Theme</string>
+    <string name="theme_desc">"Wähle dein Theme"</string>
 </resources>

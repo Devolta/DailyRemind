@@ -296,7 +296,7 @@ public class ChangeReminder extends AppCompatActivity {
     private class modeItemSelectedListener implements AdapterView.OnItemSelectedListener {
 
         public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-            String mode = parent.getItemAtPosition(pos).toString();
+            //String mode = parent.getItemAtPosition(pos).toString();
 
             switch (pos) {
                 case 0:
