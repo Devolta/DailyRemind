@@ -18,6 +18,7 @@ import android.support.v7.view.ActionMode;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -37,6 +38,7 @@ import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.bignerdranch.android.multiselector.ModalMultiSelectorCallback;
 import com.bignerdranch.android.multiselector.MultiSelector;
 import com.bignerdranch.android.multiselector.SwappingHolder;
+import com.devolta.dailyremind.Interfaces.ItemTouchHelperAdapter;
 import com.devolta.dailyremind.Interfaces.RemoveItem;
 import com.devolta.dailyremind.RecyclerData.Card;
 import com.devolta.devoltalibrary.Calculate;
@@ -52,6 +54,7 @@ import java.io.ObjectOutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -278,6 +281,10 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.addItemDecoration(new SimpleDividerItemDecoration(this));
         recyclerView.setAdapter(adapter);
 
+        ItemTouchHelper.Callback callback = new ItemTouchHelperCallback(adapter);
+        ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
+        touchHelper.attachToRecyclerView(recyclerView);
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -390,7 +397,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.ViewHolder> implements RemoveItem {
+    public class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.ViewHolder> implements RemoveItem, ItemTouchHelperAdapter {
 
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -406,6 +413,26 @@ public class MainActivity extends AppCompatActivity {
             holder.setReminderText(card.getCardText());
             card_tv2.setText(card.getCardRemainingTime());
             holder.setSelectable(true);
+        }
+
+        @Override
+        public void onItemDismiss(int position) {
+
+        }
+
+        @Override
+        public boolean onItemMove(int fromPosition, int toPosition) {
+            if (fromPosition < toPosition) {
+                for (int i = fromPosition; i < toPosition; i++) {
+                    Collections.swap(cards, i, i + 1);
+                }
+            } else {
+                for (int i = fromPosition; i > toPosition; i--) {
+                    Collections.swap(cards, i, i - 1);
+                }
+            }
+            adapter.notifyItemMoved(fromPosition, toPosition);
+            return true;
         }
 
         @Override
@@ -539,6 +566,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+
 }
 
 
