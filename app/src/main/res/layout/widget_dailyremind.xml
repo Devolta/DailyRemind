@@ -6,33 +6,86 @@
 
     <Button
         android:id="@+id/refresh_button"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_marginEnd="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
-        android:background="@drawable/refresh" />
+        android:background="@drawable/refresh"
+        android:backgroundTint="@android:color/white" />
+
+    <ImageView
+        android:id="@+id/alarm_ic"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:src="@drawable/alarm"
+        android:tint="@android:color/white" />
 
     <TextView
         android:id="@+id/no_alarms_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_toEndOf="@+id/alarm_ic"
         android:layout_toLeftOf="@id/refresh_button"
+        android:layout_toRightOf="@+id/alarm_ic"
         android:layout_toStartOf="@id/refresh_button"
+        android:textColor="@android:color/primary_text_light"
         android:visibility="invisible" />
 
     <TextView
-        android:id="@+id/next_alarm_text"
+        android:id="@+id/next_alarm_text1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+        android:layout_alignBaseline="@id/refresh_button"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_toEndOf="@+id/alarm_ic"
         android:layout_toLeftOf="@id/refresh_button"
-        android:layout_toStartOf="@id/refresh_button" />
+        android:layout_toRightOf="@+id/alarm_ic"
+        android:layout_toStartOf="@id/refresh_button"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textColor="@android:color/primary_text_light"
+        android:textSize="14sp" />
 
+    <TextView
+        android:id="@+id/next_alarm_text2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/next_alarm_text1"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_toEndOf="@+id/alarm_ic"
+        android:layout_toLeftOf="@id/refresh_button"
+        android:layout_toRightOf="@+id/alarm_ic"
+        android:layout_toStartOf="@id/refresh_button"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@android:color/primary_text_light"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/next_alarm_text3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/next_alarm_text2"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_toEndOf="@+id/alarm_ic"
+        android:layout_toLeftOf="@id/refresh_button"
+        android:layout_toRightOf="@+id/alarm_ic"
+        android:layout_toStartOf="@id/refresh_button"
+        android:textColor="@android:color/secondary_text_light"
+        android:textSize="12sp" />
 
 </RelativeLayout>

@@ -8,7 +8,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.PreferenceFragmentCompat;
-import android.support.v7.preference.PreferenceScreen;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.Window;
@@ -17,13 +16,10 @@ import android.view.WindowManager;
 import net.xpece.android.support.preference.PreferenceScreenNavigationStrategy;
 
 public class SettingsActivity extends AppCompatActivity implements
-        PreferenceFragmentCompat.OnPreferenceStartScreenCallback,
         FragmentManager.OnBackStackChangedListener,
         PreferenceScreenNavigationStrategy.ReplaceFragment.Callbacks {
 
-    private Toolbar toolbar;
     private SettingsFragment settingsFragment;
-    private PreferenceScreenNavigationStrategy.ReplaceFragment replaceFragmentStrategy;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,8 +32,6 @@ public class SettingsActivity extends AppCompatActivity implements
             window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
         }
 
-        replaceFragmentStrategy = new PreferenceScreenNavigationStrategy.ReplaceFragment(this, R.anim.abc_fade_in, R.anim.abc_fade_out, R.anim.abc_fade_in, R.anim.abc_fade_out);
-
         if (savedInstanceState == null) {
             settingsFragment = SettingsFragment.newInstance(null);
             getSupportFragmentManager().beginTransaction().add(R.id.content, settingsFragment, "Settings").commit();
@@ -46,7 +40,7 @@ public class SettingsActivity extends AppCompatActivity implements
         }
 
         getSupportFragmentManager().addOnBackStackChangedListener(this);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
         setSupportActionBar(toolbar);
 
@@ -76,15 +70,8 @@ public class SettingsActivity extends AppCompatActivity implements
     }
 
     @Override
-    public boolean onPreferenceStartScreen(final PreferenceFragmentCompat preferenceFragmentCompat, final PreferenceScreen preferenceScreen) {
-        replaceFragmentStrategy.onPreferenceStartScreen(getSupportFragmentManager(), preferenceFragmentCompat, preferenceScreen);
-        return true;
-//        return false; // Turn off to try ReplaceRoot strategy.
-    }
-
-    @Override
     public PreferenceFragmentCompat onBuildPreferenceFragment(final String rootKey) {
-        return settingsFragment.newInstance(rootKey);
+        return SettingsFragment.newInstance(rootKey);
     }
 
     @Override

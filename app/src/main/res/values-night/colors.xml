@@ -11,5 +11,5 @@
     <color name="green">#669900</color>
     <color name="orange">#FF8800</color>
     <color name="background">#212121</color>
-    <color name="cardBackground">#424242</color>
+    <color name="cardBackground">#212121</color>
 </resources>

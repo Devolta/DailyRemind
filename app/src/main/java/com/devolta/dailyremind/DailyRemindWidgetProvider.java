@@ -50,7 +50,9 @@ public class DailyRemindWidgetProvider extends AppWidgetProvider {
                 }
 
                 ArrayList<String> times = new ArrayList<>();
+                ArrayList<String> titles = new ArrayList<>();
                 times.clear();
+                titles.clear();
                 for (int i = cards.size() - 1; i >= 0; i--) {
                     Card card = cards.get(i);
 
@@ -66,23 +68,30 @@ public class DailyRemindWidgetProvider extends AppWidgetProvider {
                     }
 
                     String remainingTime = calculate.calcTimeDiff(then.getTime(), now.getTime());
-                    remainingTime = remainingTime.replace("remaining", "");
                     times.add(remainingTime);
+                    titles.add(card.getCardText());
                 }
                 //sort all the remaining times from lowest to highest
                 Collections.sort(times, Collections.<String>reverseOrder());
+                Collections.sort(titles, Collections.<String>reverseOrder());
                 String remainingTime = times.get(0);
+                String title = titles.get(0);
 
                 if (remainingTime.contentEquals("error")) {
                     views.setTextViewText(R.id.no_alarms_text, context.getText(R.string.no_alarm_text));
                     views.setViewVisibility(R.id.no_alarms_text, View.VISIBLE);
+                    views.setViewVisibility(R.id.alarm_ic, View.INVISIBLE);
                 } else {
                     views.setViewVisibility(R.id.no_alarms_text, View.INVISIBLE);
-                    views.setTextViewText(R.id.next_alarm_text, "Next Alarm in " + remainingTime);
+                    views.setTextViewText(R.id.next_alarm_text1, "Next Alarm: ");
+                    views.setTextViewText(R.id.next_alarm_text2, title);
+                    views.setTextViewText(R.id.next_alarm_text3, remainingTime);
+                    views.setViewVisibility(R.id.alarm_ic, View.VISIBLE);
                 }
             } else {
                 views.setTextViewText(R.id.no_alarms_text, context.getText(R.string.no_alarm_text));
                 views.setViewVisibility(R.id.no_alarms_text, View.VISIBLE);
+                views.setViewVisibility(R.id.alarm_ic, View.INVISIBLE);
             }
 
             Intent update = new Intent(context, DailyRemindWidgetProvider.class);

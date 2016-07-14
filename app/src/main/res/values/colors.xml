@@ -12,4 +12,5 @@
     <color name="orange">#FF8800</color>
     <color name="background">#FAFAFA</color>
     <color name="cardBackground">#FFFFFF</color>
+    <color name="widgetBackground">#92B234</color>
 </resources>

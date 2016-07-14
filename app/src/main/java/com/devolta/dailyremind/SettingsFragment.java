@@ -2,10 +2,13 @@ package com.devolta.dailyremind;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.preference.XpPreferenceFragment;
+import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 import net.xpece.android.support.preference.ListPreference;
 import net.xpece.android.support.preference.SwitchPreference;
@@ -14,12 +17,14 @@ public class SettingsFragment extends XpPreferenceFragment {
 
     private ListPreference listPreference;
 
-    private Preference.OnPreferenceChangeListener preferenceChangeListener = new Preference.OnPreferenceChangeListener() {
+    private final Preference.OnPreferenceChangeListener preferenceChangeListener = new Preference.OnPreferenceChangeListener() {
         @Override
         public boolean onPreferenceChange(Preference preference, Object value) {
             String stringValue = value.toString();
 
             if (preference instanceof SwitchPreference) {
+
+                //Auto Night Mode Setting
                 if (preference.getKey().contentEquals("auto_night_switch")) {
                     Boolean boolVal = (Boolean) value;
                     SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getContext());
@@ -30,6 +35,8 @@ public class SettingsFragment extends XpPreferenceFragment {
                     return true;
                 }
             } else if (preference instanceof ListPreference) {
+
+                //Theme Setting
                 if (preference.getKey().contentEquals("theme_pref")) {
                     ListPreference listPreference = (ListPreference) preference;
                     int index = listPreference.findIndexOfValue(stringValue);
@@ -49,6 +56,8 @@ public class SettingsFragment extends XpPreferenceFragment {
 
                     return true;
                 }
+
+
             }
 
             return true;
@@ -61,6 +70,15 @@ public class SettingsFragment extends XpPreferenceFragment {
         SettingsFragment fragment = new SettingsFragment();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        final RecyclerView listView = getListView();
+
+        // We don't want this. The children are still focusable.
+        listView.setFocusable(false);
     }
 
     public void onCreatePreferences2(Bundle savedInstanceState, final String rootKey) {
