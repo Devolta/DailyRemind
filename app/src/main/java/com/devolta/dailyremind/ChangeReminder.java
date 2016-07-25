@@ -42,8 +42,6 @@ import java.util.concurrent.TimeUnit;
 
 import me.grantland.widget.AutofitTextView;
 
-//import com.squareup.leakcanary.LeakCanary;
-
 public class ChangeReminder extends AppCompatActivity {
 
     private final Calculate calculate = new Calculate();
@@ -52,7 +50,7 @@ public class ChangeReminder extends AppCompatActivity {
     private final Calendar calendar = Calendar.getInstance();
     private SimpleDateFormat stf;
     private ArrayList<Card> cards;
-    private AutofitTextView SelectedTimeView;
+    private AutofitTextView selectedTimeView;
     private final TimePickerDialog.OnTimeSetListener onTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
 
 
@@ -67,16 +65,16 @@ public class ChangeReminder extends AppCompatActivity {
                 calendar.set(Calendar.AM_PM, Calendar.PM);
             }
 
-            SelectedTimeView.setText(stf.format(calendar.getTime()));
+            selectedTimeView.setText(stf.format(calendar.getTime()));
         }
     };
     private AppCompatEditText quantity_et;
     private AppCompatEditText editText;
-    private AutofitTextView SelectedDateView;
+    private AutofitTextView selectedDateView;
     private final DatePickerDialog.OnDateSetListener dateOnDateSetListener = new DatePickerDialog.OnDateSetListener() {
         public void onDateSet(DatePicker view, int year, int month, int day) {
             calendar.set(year, month, day);
-            SelectedDateView.setText(sdf.format(calendar.getTime()));
+            selectedDateView.setText(sdf.format(calendar.getTime()));
         }
     };
     private int year;
@@ -96,8 +94,8 @@ public class ChangeReminder extends AppCompatActivity {
         String time = getIntent().getStringExtra("TIME");
         String date = getIntent().getStringExtra("DATE");
 
-        SelectedDateView = (AutofitTextView) findViewById(R.id.date);
-        SelectedTimeView = (AutofitTextView) findViewById(R.id.time);
+        selectedDateView = (AutofitTextView) findViewById(R.id.date);
+        selectedTimeView = (AutofitTextView) findViewById(R.id.time);
         SwitchCompat repeat_switch = (SwitchCompat) findViewById(R.id.repeat_switch);
         AppCompatSpinner spinner_mode = (AppCompatSpinner) findViewById(R.id.spinner_mode);
         quantity_et = (AppCompatEditText) findViewById(R.id.quantity_et);
@@ -115,19 +113,19 @@ public class ChangeReminder extends AppCompatActivity {
             is24Hour = true;
         }
 
-        SelectedTimeView.setText(time);
+        selectedTimeView.setText(time);
         try {
             Date date1 = sdtf.parse(date + " " + time);
             calendar.setTime(date1);
         } catch (ParseException e) {
             Log.d("PARSEEXCEPTION:", " " + e);
         }
-        SelectedDateView.setText(date);
+        selectedDateView.setText(date);
         editText.setText(text);
         quantity_et.setText(getIntent().getStringExtra("QUANTITY"));
 
-        SelectedDateView.setPadding(35, 0, 50, 0);
-        SelectedTimeView.setPadding(35, 0, 50, 0);
+        selectedDateView.setPadding(35, 0, 50, 0);
+        selectedTimeView.setPadding(35, 0, 50, 0);
 
         Bundle b = this.getIntent().getExtras();
         cards = (ArrayList<Card>) b.getSerializable("cards");
@@ -145,7 +143,7 @@ public class ChangeReminder extends AppCompatActivity {
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner_mode.setAdapter(adapter);
-        spinner_mode.setOnItemSelectedListener(new modeItemSelectedListener());
+        spinner_mode.setOnItemSelectedListener(new ItemModeSelectedListener());
         spinner_mode.setSelection(getIndex(spinner_mode, getIntent().getStringExtra("MODE")));
 
         repeat_switch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -202,9 +200,9 @@ public class ChangeReminder extends AppCompatActivity {
 
             String remindText = editText.getText().toString();
             card.cardText(remindText);
-            card.cardDate(SelectedDateView.getText().toString());
+            card.cardDate(selectedDateView.getText().toString());
             card.cardRemainingTime(remainingTime);
-            card.cardTime(SelectedTimeView.getText().toString());
+            card.cardTime(selectedTimeView.getText().toString());
 
             AlarmManager alarmMgr;
             PendingIntent alarmIntent;
@@ -227,7 +225,7 @@ public class ChangeReminder extends AppCompatActivity {
                     Intent intent1 = new Intent(getBaseContext(), AlarmReceiver.class);
                     intent1.putExtra("RemindText", remindText);
                     intent1.putExtra("RemindPosition", position);
-                    alarmIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
+                    alarmIntent = PendingIntent.getBroadcast(getApplicationContext(), position, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
 
                     alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), repeat_quantity * quantity, alarmIntent);
                     setResult(Activity.RESULT_OK, intent);
@@ -243,17 +241,21 @@ public class ChangeReminder extends AppCompatActivity {
                 } else {
                     cards.set(position, card);
                     b.putSerializable("cards", cards);
+                    int intentNumber = cards.size() - 1;
                     intent.putExtras(b);
 
                     alarmMgr = (AlarmManager) getBaseContext().getSystemService(Context.ALARM_SERVICE);
                     Intent intent1 = new Intent(getBaseContext(), AlarmReceiver.class);
                     intent1.putExtra("RemindText", remindText);
                     intent1.putExtra("RemindPosition", position);
-                    alarmIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
+                    alarmIntent = PendingIntent.getBroadcast(getApplicationContext(), intentNumber, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
 
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        alarmMgr.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmIntent);
+                    } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                         alarmMgr.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmIntent);
                     } else {
+                        Log.d("Test", "" + calendar.getTimeInMillis());
                         alarmMgr.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmIntent);
                     }
                     setResult(Activity.RESULT_OK, intent);
@@ -267,7 +269,7 @@ public class ChangeReminder extends AppCompatActivity {
 
     private void addClickListener(final boolean is24Hour) {
 
-        SelectedTimeView.setOnClickListener(new View.OnClickListener() {
+        selectedTimeView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Calendar calendar = Calendar.getInstance();
@@ -278,7 +280,7 @@ public class ChangeReminder extends AppCompatActivity {
             }
         });
 
-        SelectedDateView.setOnClickListener(new View.OnClickListener() {
+        selectedDateView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Calendar calendar = Calendar.getInstance();
@@ -293,7 +295,7 @@ public class ChangeReminder extends AppCompatActivity {
 
     }
 
-    private class modeItemSelectedListener implements AdapterView.OnItemSelectedListener {
+    private class ItemModeSelectedListener implements AdapterView.OnItemSelectedListener {
 
         public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
             //String mode = parent.getItemAtPosition(pos).toString();

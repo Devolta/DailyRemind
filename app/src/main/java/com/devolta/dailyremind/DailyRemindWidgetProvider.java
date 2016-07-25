@@ -14,6 +14,9 @@ import android.widget.RemoteViews;
 import com.devolta.dailyremind.RecyclerData.Card;
 import com.devolta.devoltalibrary.Calculate;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -26,12 +29,35 @@ public class DailyRemindWidgetProvider extends AppWidgetProvider {
     private static ArrayList<Card> cards = new ArrayList<>();
     private final Calculate calculate = new Calculate();
 
-    //retrieve cards Arraylist
-    static void setCards(ArrayList<Card> data) {
-        DailyRemindWidgetProvider.cards = data;
-    }
-
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+
+        if (cards.isEmpty()) {
+            try {
+                String path = context.getFilesDir().getAbsolutePath() + "/" + "Arraylist 1";
+                File file = new File(path);
+                if (file.exists()) {
+                    FileInputStream fileInputStream;
+                    fileInputStream = context.openFileInput("Arraylist 1");
+                    ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+                    try {
+                        int size = objectInputStream.readInt();
+                        for (int i = 0; i < size; i++) {
+                            Card card = (Card) objectInputStream.readObject();
+                            cards.add(card);
+                        }
+                        objectInputStream.close();
+                    } catch (RuntimeException e) {
+                        throw e;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            } catch (RuntimeException e) {
+                throw e;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
         // Perform this loop procedure for each App Widget that belongs to this provider
         for (int appWidgetId : appWidgetIds) {
@@ -59,17 +85,15 @@ public class DailyRemindWidgetProvider extends AppWidgetProvider {
                     String time = card.getCardTime();
                     String date = card.getCardDate();
 
-                    Date now = new Date();
-                    Date then = null;
                     try {
-                        then = sdtf.parse(date + " " + time);
+                        Date now = new Date();
+                        Date then = sdtf.parse(date + " " + time);
+                        String remainingTime = calculate.calcTimeDiff(then.getTime(), now.getTime());
+                        times.add(remainingTime);
+                        titles.add(card.getCardText());
                     } catch (ParseException e) {
                         Log.d("PARSEEXCEPTION:", " " + e);
                     }
-
-                    String remainingTime = calculate.calcTimeDiff(then.getTime(), now.getTime());
-                    times.add(remainingTime);
-                    titles.add(card.getCardText());
                 }
                 //sort all the remaining times from lowest to highest
                 Collections.sort(times, Collections.<String>reverseOrder());
@@ -77,21 +101,32 @@ public class DailyRemindWidgetProvider extends AppWidgetProvider {
                 String remainingTime = times.get(0);
                 String title = titles.get(0);
 
-                if (remainingTime.contentEquals("error")) {
+                Log.d("WIDGET", remainingTime);
+
+                if (remainingTime.isEmpty() || remainingTime.contentEquals("error")) {
                     views.setTextViewText(R.id.no_alarms_text, context.getText(R.string.no_alarm_text));
                     views.setViewVisibility(R.id.no_alarms_text, View.VISIBLE);
                     views.setViewVisibility(R.id.alarm_ic, View.INVISIBLE);
+                    views.setViewVisibility(R.id.next_alarm_text1, View.INVISIBLE);
+                    views.setViewVisibility(R.id.next_alarm_text2, View.INVISIBLE);
+                    views.setViewVisibility(R.id.next_alarm_text3, View.INVISIBLE);
                 } else {
                     views.setViewVisibility(R.id.no_alarms_text, View.INVISIBLE);
                     views.setTextViewText(R.id.next_alarm_text1, "Next Alarm: ");
                     views.setTextViewText(R.id.next_alarm_text2, title);
                     views.setTextViewText(R.id.next_alarm_text3, remainingTime);
                     views.setViewVisibility(R.id.alarm_ic, View.VISIBLE);
+                    views.setViewVisibility(R.id.next_alarm_text1, View.VISIBLE);
+                    views.setViewVisibility(R.id.next_alarm_text2, View.VISIBLE);
+                    views.setViewVisibility(R.id.next_alarm_text3, View.VISIBLE);
                 }
             } else {
                 views.setTextViewText(R.id.no_alarms_text, context.getText(R.string.no_alarm_text));
                 views.setViewVisibility(R.id.no_alarms_text, View.VISIBLE);
                 views.setViewVisibility(R.id.alarm_ic, View.INVISIBLE);
+                views.setViewVisibility(R.id.next_alarm_text1, View.INVISIBLE);
+                views.setViewVisibility(R.id.next_alarm_text2, View.INVISIBLE);
+                views.setViewVisibility(R.id.next_alarm_text3, View.INVISIBLE);
             }
 
             Intent update = new Intent(context, DailyRemindWidgetProvider.class);

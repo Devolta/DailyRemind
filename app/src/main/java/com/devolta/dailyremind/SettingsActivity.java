@@ -40,6 +40,7 @@ public class SettingsActivity extends AppCompatActivity implements
         }
 
         getSupportFragmentManager().addOnBackStackChangedListener(this);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
         setSupportActionBar(toolbar);

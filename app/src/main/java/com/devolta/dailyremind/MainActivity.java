@@ -30,6 +30,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -63,16 +64,17 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity {
 
     private static final int updateArraylist = 1;
-    public static List<Integer> intentNumber2 = new ArrayList<>();
+    static List<Integer> intentNumber2 = new ArrayList<>();
     private final MultiSelector multiSelector = new MultiSelector();
     private final Calculate calculate = new Calculate();
     private ArrayList<Card> cards = new ArrayList<>();
     private SimpleAdapter adapter;
     private RecyclerView recyclerView;
     private SimpleDateFormat sdtf;
-    private ImageView card_check;
     private SwipeRefreshLayout refreshLayout;
     private RemoveItem removeItem;
+    private ActionMode actionMode2;
+
     // Multi select items in recycler view
     private final android.support.v7.view.ActionMode.Callback mDeleteMode = new ModalMultiSelectorCallback(multiSelector) {
 
@@ -83,6 +85,12 @@ public class MainActivity extends AppCompatActivity {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 getWindow().setStatusBarColor(ContextCompat.getColor(getBaseContext(), R.color.colorPrimaryDark));
             }
+
+            //make items selectable
+            multiSelector.setSelectable(true);
+            refreshLayout.setEnabled(false);
+
+            actionMode2 = actionMode;
 
             return true;
         }
@@ -129,14 +137,20 @@ public class MainActivity extends AppCompatActivity {
                 if (multiSelector.isSelected(i, 0)) {
 
                     multiSelector.setSelected(i, i, false);
+
                 }
             }
 
+            //make items no longer selectable
+            multiSelector.setSelectable(false);
+            refreshLayout.setEnabled(true);
         }
     };
+
     private TextView card_tv;
     private TextView card_tv2;
     private ImageView card_th;
+    private ImageView card_check;
 
     private void handleArrayList(Context context, int remove) {
 
@@ -152,15 +166,19 @@ public class MainActivity extends AppCompatActivity {
                         ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
                         try {
                             int size = objectInputStream.readInt();
-                            for (int i = 0; i <= size; i++) {
+                            for (int i = 0; i < size; i++) {
                                 Card card = (Card) objectInputStream.readObject();
                                 cards.add(card);
                             }
                             objectInputStream.close();
+                        } catch (RuntimeException e) {
+                            throw e;
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
+                } catch (RuntimeException e) {
+                    throw e;
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -174,10 +192,14 @@ public class MainActivity extends AppCompatActivity {
                         try {
                             intentNumber2 = (List<Integer>) objectInputStream.readObject();
                             objectInputStream.close();
+                        } catch (RuntimeException e) {
+                            throw e;
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
+                } catch (RuntimeException e) {
+                    throw e;
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -191,6 +213,8 @@ public class MainActivity extends AppCompatActivity {
                         objectOutputStream.writeObject(card);
                     }
                     objectOutputStream.close();
+                } catch (RuntimeException e) {
+                    throw e;
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -200,6 +224,8 @@ public class MainActivity extends AppCompatActivity {
                     ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
                     objectOutputStream.writeObject(intentNumber2);
                     objectOutputStream.close();
+                } catch (RuntimeException e) {
+                    throw e;
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -214,6 +240,19 @@ public class MainActivity extends AppCompatActivity {
                     objectOutputStream.writeObject(card);
                 }
                 objectOutputStream.close();
+            } catch (RuntimeException e) {
+                throw e;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            try {
+                FileOutputStream fileOutputStream;
+                fileOutputStream = context.openFileOutput("Arraylist 2", Context.MODE_PRIVATE);
+                ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+                objectOutputStream.writeObject(intentNumber2);
+                objectOutputStream.close();
+            } catch (RuntimeException e) {
+                throw e;
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -305,12 +344,12 @@ public class MainActivity extends AppCompatActivity {
 
         refreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
 
-        new updateRemainingTime().execute();
+        new UpdateRemainingTime().execute();
 
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                new updateRemainingTime().execute();
+                new UpdateRemainingTime().execute();
             }
         });
         refreshLayout.setColorSchemeResources(R.color.orange, R.color.green, R.color.blue, R.color.purple);
@@ -326,7 +365,6 @@ public class MainActivity extends AppCompatActivity {
                 cards = (ArrayList<Card>) b.getSerializable("cards");
                 adapter.notifyItemInserted(cards.size() - 1);
                 handleArrayList(getApplicationContext(), 0);
-                DailyRemindWidgetProvider.setCards(cards);
             } else {
                 Log.e("Error", "updating Arraylist failed");
             }
@@ -356,7 +394,7 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private class updateRemainingTime extends AsyncTask<Void, Void, Void> {
+    private class UpdateRemainingTime extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected Void doInBackground(Void... params) {
@@ -379,7 +417,6 @@ public class MainActivity extends AppCompatActivity {
                     String remainingTime = calculate.calcTimeDiff(then.getTime(), now.getTime());
                     Log.d("Card", "Card updated " + remainingTime);
                     cards.get(i).cardRemainingTime(remainingTime);
-                    DailyRemindWidgetProvider.setCards(cards);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -410,6 +447,9 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
             Card card = cards.get(position);
+            SharedPreferences prefs = getSharedPreferences(AlarmReceiver.class.getSimpleName(), Context.MODE_PRIVATE);
+            boolean positionDone = prefs.getBoolean("Alarm " + position, false);
+            holder.alarmDone(positionDone);
             holder.setReminderText(card.getCardText());
             card_tv2.setText(card.getCardRemainingTime());
             holder.setSelectable(true);
@@ -421,18 +461,24 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        public boolean onItemMove(int fromPosition, int toPosition) {
-            if (fromPosition < toPosition) {
-                for (int i = fromPosition; i < toPosition; i++) {
-                    Collections.swap(cards, i, i + 1);
-                }
-            } else {
-                for (int i = fromPosition; i > toPosition; i--) {
-                    Collections.swap(cards, i, i - 1);
-                }
-            }
+        public void onItemMove(int fromPosition, int toPosition) {
+            Collections.swap(cards, fromPosition, toPosition);
             adapter.notifyItemMoved(fromPosition, toPosition);
-            return true;
+
+            //swap the names of the reminder info files
+            File fromFile = new File(getFilesDir(), "Reminder " + fromPosition);
+            File tempFile = new File(getFilesDir(), "Reminder " + "temp");
+            File toFile = new File(getFilesDir(), "Reminder " + toPosition);
+            boolean success = fromFile.renameTo(tempFile);
+            boolean success1 = toFile.renameTo(fromFile);
+            boolean success2 = tempFile.renameTo(toFile);
+            Log.d("File Rename", "" + success + " " + success1 + " " + success2);
+
+            //close contextual menu
+            actionMode2.finish();
+
+            //write the file changes
+            handleArrayList(getApplicationContext(), 0);
         }
 
         @Override
@@ -456,15 +502,15 @@ public class MainActivity extends AppCompatActivity {
             Log.d("IntentNumber", "" + intentNumber);
 
             PendingIntent alarmIntent = PendingIntent.getBroadcast(getApplicationContext(), intentNumber, intent1, PendingIntent.FLAG_CANCEL_CURRENT);
-            alarmIntent.cancel();
 
             alarmManager.cancel(alarmIntent);
 
-            File dir = getFilesDir();
-            File file = new File(dir, "Reminder" + " " + position);
-            boolean deleted = file.delete();
-
             handleArrayList(getApplicationContext(), 1);
+
+            SharedPreferences preferences = getSharedPreferences(AlarmReceiver.class.getSimpleName(), Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.remove("Alarm " + position);
+            editor.apply();
         }
 
         public class ViewHolder extends SwappingHolder implements View.OnClickListener, View.OnLongClickListener {
@@ -509,10 +555,15 @@ public class MainActivity extends AppCompatActivity {
                         InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
                         BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
                         text = bufferedReader.readLine();
+                        if (text == null) {
+                            Log.e("BufferedReader", "failed to read Reminder infos");
+                        }
                         time = bufferedReader.readLine();
                         date = bufferedReader.readLine();
                         repeat = bufferedReader.readLine();
-                        repeat2 = repeat.equals("true");
+                        if (repeat != null) {
+                            repeat2 = repeat.equals("true");
+                        }
                         quantity = bufferedReader.readLine();
                         mode = bufferedReader.readLine();
                         inputStreamReader.close();
@@ -539,13 +590,22 @@ public class MainActivity extends AppCompatActivity {
             public boolean onLongClick(View view) {
                 AppCompatActivity activity = MainActivity.this;
                 activity.startSupportActionMode(mDeleteMode);
-                multiSelector.setSelectable(true);
                 multiSelector.setSelected(this, true);
                 background.setSelected(true);
                 return true;
             }
 
-            public void setReminderText(String cardText) {
+            void alarmDone(Boolean alarmDone) {
+                if (alarmDone) {
+                    card_tv2.setVisibility(View.INVISIBLE);
+                    RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                    layoutParams.addRule(RelativeLayout.CENTER_VERTICAL);
+                    card_check.setVisibility(View.VISIBLE);
+                    card_tv.setLayoutParams(layoutParams);
+                }
+            }
+
+            void setReminderText(String cardText) {
                 card_tv.setText(cardText);
 
                 ColorGenerator colorGenerator = ColorGenerator.MATERIAL;
@@ -559,7 +619,11 @@ public class MainActivity extends AppCompatActivity {
                 int color = colorGenerator.getRandomColor();
 
                 drawableBuilder = TextDrawable.builder()
+                        .beginConfig()
+                        .toUpperCase()
+                        .endConfig()
                         .buildRound(letter, color);
+
                 card_th.setImageDrawable(drawableBuilder);
             }
 

@@ -11,6 +11,9 @@ import android.util.Log;
 
 import com.devolta.dailyremind.RecyclerData.Card;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -22,6 +25,34 @@ public class BootReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
 
         final Calendar calendar = Calendar.getInstance();
+
+        if (cards.isEmpty()) {
+            try {
+                String path = context.getFilesDir().getAbsolutePath() + "/" + "Arraylist 1";
+                File file = new File(path);
+                if (file.exists()) {
+                    FileInputStream fileInputStream;
+                    fileInputStream = context.openFileInput("Arraylist 1");
+                    ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+                    try {
+                        int size = objectInputStream.readInt();
+                        for (int i = 0; i < size; i++) {
+                            Card card = (Card) objectInputStream.readObject();
+                            cards.add(card);
+                        }
+                        objectInputStream.close();
+                    } catch (RuntimeException e) {
+                        throw e;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            } catch (RuntimeException e) {
+                throw e;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
         if (intent.getAction().equalsIgnoreCase(Intent.ACTION_BOOT_COMPLETED)) {
             if (context != null) {
@@ -69,6 +100,8 @@ public class BootReceiver extends BroadcastReceiver {
                         }
 
                     }
+                } catch (RuntimeException e) {
+                    throw e;
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

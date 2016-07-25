@@ -77,7 +77,6 @@ public class SettingsFragment extends XpPreferenceFragment {
         super.onViewCreated(view, savedInstanceState);
         final RecyclerView listView = getListView();
 
-        // We don't want this. The children are still focusable.
         listView.setFocusable(false);
     }
 

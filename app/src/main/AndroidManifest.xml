@@ -42,6 +42,7 @@
         <activity
             android:name=".SettingsActivity"
             android:label="Settings"
+            android:parentActivityName=".MainActivity"
             android:theme="@style/AppThemePreferences">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

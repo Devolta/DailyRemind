@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/widget_shape">
@@ -23,10 +24,12 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
+        android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         android:src="@drawable/alarm"
-        android:tint="@android:color/white" />
+        tools:ignore="VectorDrawableCompat" />
 
     <TextView
         android:id="@+id/no_alarms_text"
@@ -39,8 +42,7 @@
         android:layout_toLeftOf="@id/refresh_button"
         android:layout_toRightOf="@+id/alarm_ic"
         android:layout_toStartOf="@id/refresh_button"
-        android:textColor="@android:color/primary_text_light"
-        android:visibility="invisible" />
+        android:textColor="@android:color/primary_text_light" />
 
     <TextView
         android:id="@+id/next_alarm_text1"

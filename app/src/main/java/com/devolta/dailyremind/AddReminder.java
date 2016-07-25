@@ -47,7 +47,6 @@ import java.util.concurrent.TimeUnit;
 
 import me.grantland.widget.AutofitTextView;
 
-//import com.squareup.leakcanary.LeakCanary;
 
 public class AddReminder extends AppCompatActivity {
 
@@ -58,14 +57,14 @@ public class AddReminder extends AppCompatActivity {
     private SimpleDateFormat stf;
     private ArrayList<Card> cards;
     private String remindText;
-    private AutofitTextView SelectedDateView;
+    private AutofitTextView selectedDateView;
     private final DatePickerDialog.OnDateSetListener dateOnDateSetListener = new DatePickerDialog.OnDateSetListener() {
         public void onDateSet(DatePicker view, int year, int month, int day) {
             calendar.set(year, month, day);
-            SelectedDateView.setText(sdf.format(calendar.getTime()));
+            selectedDateView.setText(sdf.format(calendar.getTime()));
         }
     };
-    private AutofitTextView SelectedTimeView;
+    private AutofitTextView selectedTimeView;
     private final TimePickerDialog.OnTimeSetListener onTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
 
 
@@ -80,7 +79,7 @@ public class AddReminder extends AppCompatActivity {
                 calendar.set(Calendar.AM_PM, Calendar.PM);
             }
 
-            SelectedTimeView.setText(stf.format(calendar.getTime()));
+            selectedTimeView.setText(stf.format(calendar.getTime()));
         }
     };
     private AppCompatEditText quantity_et;
@@ -88,7 +87,7 @@ public class AddReminder extends AppCompatActivity {
     private int month;
     private int day;
     private boolean repeat;
-    private long repeat_quantity;
+    private long repeat_quantity = 0;
     private AppCompatSpinner spinner_mode;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,8 +97,8 @@ public class AddReminder extends AppCompatActivity {
 
         setContentView(R.layout.activity_add_reminder);
 
-        SelectedDateView = (AutofitTextView) findViewById(R.id.date);
-        SelectedTimeView = (AutofitTextView) findViewById(R.id.time);
+        selectedDateView = (AutofitTextView) findViewById(R.id.date);
+        selectedTimeView = (AutofitTextView) findViewById(R.id.time);
         SwitchCompat repeat_switch = (SwitchCompat) findViewById(R.id.repeat_switch);
         spinner_mode = (AppCompatSpinner) findViewById(R.id.spinner_mode);
         quantity_et = (AppCompatEditText) findViewById(R.id.quantity_et);
@@ -113,9 +112,8 @@ public class AddReminder extends AppCompatActivity {
             is24Hour = true;
         }
 
-        SelectedDateView.setText(sdf.format(calendar.getTime()));
-
-        SelectedTimeView.setText(stf.format(calendar.getTime()));
+        selectedDateView.setText(sdf.format(calendar.getTime()));
+        selectedTimeView.setText(stf.format(calendar.getTime()));
 
         Bundle b = this.getIntent().getExtras();
         cards = (ArrayList<Card>) b.getSerializable("cards");
@@ -133,7 +131,7 @@ public class AddReminder extends AppCompatActivity {
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner_mode.setAdapter(adapter);
-        spinner_mode.setOnItemSelectedListener(new modeItemSelectedListener());
+        spinner_mode.setOnItemSelectedListener(new ItemModeSelectedListener());
 
         repeat_switch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -179,9 +177,9 @@ public class AddReminder extends AppCompatActivity {
             remindText = editText.getText().toString();
 
             card.cardText(remindText);
-            card.cardDate(SelectedDateView.getText().toString());
+            card.cardDate(selectedDateView.getText().toString());
             card.cardRemainingTime(remainingTime);
-            card.cardTime(SelectedTimeView.getText().toString());
+            card.cardTime(selectedTimeView.getText().toString());
 
             AlarmManager alarmMgr;
             PendingIntent alarmIntent;
@@ -194,6 +192,7 @@ public class AddReminder extends AppCompatActivity {
                     Snackbar snackbar = Snackbar.make(this.findViewById(android.R.id.content), R.string.elapsed_time, Snackbar.LENGTH_SHORT);
                     snackbar.show();
                 } else {
+                    //write reminder info to file
                     String quantity_str = quantity_et.getText().toString();
                     int quantity = Integer.parseInt(quantity_str);
                     saveInfo(quantity_str);
@@ -209,6 +208,7 @@ public class AddReminder extends AppCompatActivity {
                     alarmMgr = (AlarmManager) getBaseContext().getSystemService(Context.ALARM_SERVICE);
                     Intent intent1 = new Intent(getBaseContext(), AlarmReceiver.class);
                     intent1.putExtra("RemindText", remindText);
+                    intent1.putExtra("RemindPosition", intentNumber);
                     alarmIntent = PendingIntent.getBroadcast(getApplicationContext(), intentNumber, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
 
                     SharedPreferences.Editor editor = prefs.edit();
@@ -232,19 +232,21 @@ public class AddReminder extends AppCompatActivity {
                     Snackbar snackbar = Snackbar.make(this.findViewById(android.R.id.content), R.string.elapsed_time, Snackbar.LENGTH_SHORT);
                     snackbar.show();
                 } else {
+                    //write reminder info to file
                     saveInfo("0");
+
                     cards.add(card);
                     b.putSerializable("cards", cards);
                     intent.putExtras(b);
 
                     SharedPreferences prefs = getSharedPreferences(AddReminder.class.getSimpleName() + " " + cards.size(), Context.MODE_PRIVATE);
-                    Log.w("Name", AddReminder.class.getSimpleName() + " " + cards.size());
                     int intentNumber = cards.size() - 1;
                     intentNumber2.add(cards.size() - 1);
 
                     alarmMgr = (AlarmManager) getBaseContext().getSystemService(Context.ALARM_SERVICE);
                     Intent intent1 = new Intent(getBaseContext(), AlarmReceiver.class);
                     intent1.putExtra("RemindText", remindText);
+                    intent1.putExtra("RemindPosition", intentNumber);
                     alarmIntent = PendingIntent.getBroadcast(getApplicationContext(), intentNumber, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
 
                     SharedPreferences.Editor editor = prefs.edit();
@@ -254,7 +256,9 @@ public class AddReminder extends AppCompatActivity {
                     editor.putLong("CalendarTime", calendar.getTimeInMillis());
                     editor.apply();
 
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        alarmMgr.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmIntent);
+                    } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                         alarmMgr.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmIntent);
                     } else {
                         Log.d("Test", "" + calendar.getTimeInMillis());
@@ -275,26 +279,29 @@ public class AddReminder extends AppCompatActivity {
             FileOutputStream fileOutputStream = new FileOutputStream(new File(getFilesDir(), "Reminder" + " " + cards.size()));
             OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fileOutputStream);
             BufferedWriter bufferedWriter = new BufferedWriter(outputStreamWriter);
-            bufferedWriter.write(remindText);
-            bufferedWriter.newLine();
-            bufferedWriter.write(SelectedTimeView.getText().toString());
-            bufferedWriter.newLine();
-            bufferedWriter.write(SelectedDateView.getText().toString());
-            bufferedWriter.newLine();
-            if (repeat) {
-                bufferedWriter.write("true");
-            } else {
-                bufferedWriter.write("false");
-            }
-            bufferedWriter.newLine();
-            bufferedWriter.write(quantity);
-            bufferedWriter.newLine();
             try {
+                bufferedWriter.write(remindText);
+                bufferedWriter.newLine();
+                bufferedWriter.write(selectedTimeView.getText().toString());
+                bufferedWriter.newLine();
+                bufferedWriter.write(selectedDateView.getText().toString());
+                bufferedWriter.newLine();
+                if (repeat) {
+                    bufferedWriter.write("true");
+                } else {
+                    bufferedWriter.write("false");
+                }
+                bufferedWriter.newLine();
+                bufferedWriter.write(quantity);
+                bufferedWriter.newLine();
                 bufferedWriter.write(spinner_mode.getSelectedItem().toString());
+                bufferedWriter.close();
             } catch (Exception e) {
                 e.printStackTrace();
+                bufferedWriter.close();
             }
-            bufferedWriter.close();
+        } catch (RuntimeException e) {
+            throw e;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -302,7 +309,7 @@ public class AddReminder extends AppCompatActivity {
 
     private void addClickListener(final boolean is24hour) {
 
-        SelectedTimeView.setOnClickListener(new View.OnClickListener() {
+        selectedTimeView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Calendar calendar = Calendar.getInstance();
@@ -313,7 +320,7 @@ public class AddReminder extends AppCompatActivity {
             }
         });
 
-        SelectedDateView.setOnClickListener(new View.OnClickListener() {
+        selectedDateView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Calendar calendar = Calendar.getInstance();
@@ -328,7 +335,7 @@ public class AddReminder extends AppCompatActivity {
 
     }
 
-    private class modeItemSelectedListener implements AdapterView.OnItemSelectedListener {
+    private class ItemModeSelectedListener implements AdapterView.OnItemSelectedListener {
 
         public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
             //String mode = parent.getItemAtPosition(pos).toString();
