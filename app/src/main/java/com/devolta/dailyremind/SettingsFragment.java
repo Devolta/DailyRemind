@@ -56,9 +56,8 @@ public class SettingsFragment extends XpPreferenceFragment {
 
                     return true;
                 }
-
-
             }
+
 
             return true;
         }

@@ -14,4 +14,6 @@
     <string name="auto_night_desc">Ändere automatisch zu einem dunklem Theme am Abend</string>
     <string name="theme_title">Theme</string>
     <string name="theme_desc">"Wähle dein Theme"</string>
+    <string name="about">Infos</string>
+    <string name="licenses_title">Lizenzen</string>
 </resources>

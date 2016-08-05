@@ -17,5 +17,4 @@
         android:title="@string/theme_title"
         app:asp_menuMode="dialog" />
 
-
 </PreferenceScreen>

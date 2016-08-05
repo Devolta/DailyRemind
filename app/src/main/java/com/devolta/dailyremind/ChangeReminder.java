@@ -124,9 +124,6 @@ public class ChangeReminder extends AppCompatActivity {
         editText.setText(text);
         quantity_et.setText(getIntent().getStringExtra("QUANTITY"));
 
-        selectedDateView.setPadding(35, 0, 50, 0);
-        selectedTimeView.setPadding(35, 0, 50, 0);
-
         Bundle b = this.getIntent().getExtras();
         cards = (ArrayList<Card>) b.getSerializable("cards");
 

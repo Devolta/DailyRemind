@@ -45,6 +45,7 @@ public class BootReceiver extends BroadcastReceiver {
                         throw e;
                     } catch (Exception e) {
                         e.printStackTrace();
+                        objectInputStream.close();
                     }
                 }
             } catch (RuntimeException e) {

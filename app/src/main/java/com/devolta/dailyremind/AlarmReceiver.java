@@ -8,6 +8,7 @@ import android.media.AudioManager;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.PowerManager;
 import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
@@ -37,12 +38,17 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
 
             String remindText = intent.getStringExtra("RemindText");
             Log.d("ALARM", "" + remindText);
-
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
-                    .setContentTitle("DailyRemind")
-                    .setContentText(remindText)
-                    .setSmallIcon(R.drawable.plus);
-
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) {
+                builder
+                        .setContentTitle("DailyRemind")
+                        .setContentText(remindText)
+                        .setSmallIcon(R.drawable.plus);
+            } else {
+                builder
+                        .setContentText(remindText)
+                        .setSmallIcon(R.drawable.plus);
+            }
 
             prefs = context.getSharedPreferences(AlarmReceiver.class.getSimpleName(), Context.MODE_PRIVATE);
             int notificationNumber = prefs.getInt("notificationNumber", 0);

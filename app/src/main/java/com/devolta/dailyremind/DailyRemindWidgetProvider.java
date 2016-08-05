@@ -26,7 +26,7 @@ import java.util.Locale;
 
 public class DailyRemindWidgetProvider extends AppWidgetProvider {
 
-    private static ArrayList<Card> cards = new ArrayList<>();
+    private static final ArrayList<Card> cards = new ArrayList<>();
     private final Calculate calculate = new Calculate();
 
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
@@ -50,6 +50,7 @@ public class DailyRemindWidgetProvider extends AppWidgetProvider {
                         throw e;
                     } catch (Exception e) {
                         e.printStackTrace();
+                        objectInputStream.close();
                     }
                 }
             } catch (RuntimeException e) {
