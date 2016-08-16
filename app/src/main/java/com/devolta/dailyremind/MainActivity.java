@@ -573,6 +573,8 @@ public class MainActivity extends AppCompatActivity {
                     String date = "error";
                     String repeat;
                     boolean repeat2 = false;
+                    String vibrate;
+                    boolean vibrate2 = false;
                     String quantity = "error";
                     String mode = "error";
 
@@ -590,6 +592,10 @@ public class MainActivity extends AppCompatActivity {
                             repeat = bufferedReader.readLine();
                             if (repeat != null) {
                                 repeat2 = repeat.equals("true");
+                            }
+                            vibrate = bufferedReader.readLine();
+                            if (vibrate != null) {
+                                vibrate2 = repeat.equals("true");
                             }
                             quantity = bufferedReader.readLine();
                             mode = bufferedReader.readLine();
@@ -613,6 +619,7 @@ public class MainActivity extends AppCompatActivity {
                     intent2.putExtra("DATE", date);
                     intent2.putExtra("TEXT", text);
                     intent2.putExtra("REPEAT", repeat2);
+                    intent2.putExtra("VIBRATE", vibrate2);
                     intent2.putExtra("QUANTITY", quantity);
                     intent2.putExtra("MODE", mode);
                     startActivityForResult(intent2, updateArraylist);

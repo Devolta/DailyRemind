@@ -74,15 +74,24 @@
             android:paddingTop="24dp"
             android:textColor="?android:attr/textColorPrimary" />
 
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/repeat_header"
+            android:layout_width="wrap_content"
+            android:paddingTop="24dp"
+            android:layout_height="wrap_content"
+            android:text="@string/repeat"
+            android:textColor="@color/colorAccent"
+            android:layout_below="@id/remindText" />
+
         <android.support.v7.widget.SwitchCompat
             android:id="@+id/repeat_switch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/remindText"
+            android:layout_below="@id/repeat_header"
             android:drawableLeft="@drawable/repeat"
             android:drawablePadding="24dp"
             android:drawableStart="@drawable/repeat"
-            android:paddingTop="24dp"
+            android:paddingTop="16dp"
             android:text="@string/repeat"
             android:textSize="16sp"
             app:switchMinWidth="60dp" />
@@ -126,7 +135,6 @@
             android:drawablePadding="24dp"
             android:drawableStart="@drawable/subject"
             android:gravity="center_vertical"
-            android:paddingBottom="8dp"
             android:paddingTop="16dp"
             android:text="@string/mode"
             android:textColor="?android:attr/textColorPrimary"
@@ -143,6 +151,31 @@
             android:layout_below="@id/quantity_et"
             android:background="@android:color/transparent"
             android:clickable="true" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/advanced_header"
+            android:layout_width="wrap_content"
+            android:paddingTop="24dp"
+            android:layout_height="wrap_content"
+            android:text="@string/advanced"
+            android:textColor="@color/colorAccent"
+            android:layout_below="@id/quantity_tv2" />
+
+
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/vibrate_switch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/advanced_header"
+            android:drawableLeft="@drawable/subject"
+            android:drawablePadding="24dp"
+            android:drawableStart="@drawable/vibrate"
+            android:gravity="center_vertical"
+            android:paddingTop="16dp"
+            android:text="@string/vibrate"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textSize="16sp"
+            app:switchMinWidth="60dp" />
 
     </RelativeLayout>
 

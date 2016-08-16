@@ -86,6 +86,7 @@ public class AddReminder extends AppCompatActivity {
     private int month;
     private int day;
     private boolean repeat;
+    private boolean vibrate;
     private long repeat_quantity = 0;
     private AppCompatSpinner spinner_mode;
 
@@ -99,6 +100,7 @@ public class AddReminder extends AppCompatActivity {
         selectedDateView = (AutofitTextView) findViewById(R.id.date);
         selectedTimeView = (AutofitTextView) findViewById(R.id.time);
         SwitchCompat repeat_switch = (SwitchCompat) findViewById(R.id.repeat_switch);
+        SwitchCompat vibrate_switch = (SwitchCompat) findViewById(R.id.vibrate_switch);
         spinner_mode = (AppCompatSpinner) findViewById(R.id.spinner_mode);
         quantity_et = (AppCompatEditText) findViewById(R.id.quantity_et);
 
@@ -136,6 +138,13 @@ public class AddReminder extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 repeat = isChecked;
+            }
+        });
+
+        vibrate_switch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                vibrate = isChecked;
             }
         });
 
@@ -208,6 +217,7 @@ public class AddReminder extends AppCompatActivity {
                     Intent intent1 = new Intent(getBaseContext(), AlarmReceiver.class);
                     intent1.putExtra("RemindText", remindText);
                     intent1.putExtra("RemindPosition", intentNumber);
+                    intent1.putExtra("Vibrate", vibrate);
                     alarmIntent = PendingIntent.getBroadcast(getApplicationContext(), intentNumber, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
 
                     SharedPreferences.Editor editor = prefs.edit();
@@ -246,6 +256,7 @@ public class AddReminder extends AppCompatActivity {
                     Intent intent1 = new Intent(getBaseContext(), AlarmReceiver.class);
                     intent1.putExtra("RemindText", remindText);
                     intent1.putExtra("RemindPosition", intentNumber);
+                    intent1.putExtra("Vibrate", vibrate);
                     alarmIntent = PendingIntent.getBroadcast(getApplicationContext(), intentNumber, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
 
                     SharedPreferences.Editor editor = prefs.edit();
@@ -285,6 +296,12 @@ public class AddReminder extends AppCompatActivity {
                 bufferedWriter.write(selectedDateView.getText().toString());
                 bufferedWriter.newLine();
                 if (repeat) {
+                    bufferedWriter.write("true");
+                } else {
+                    bufferedWriter.write("false");
+                }
+                bufferedWriter.newLine();
+                if (vibrate) {
                     bufferedWriter.write("true");
                 } else {
                     bufferedWriter.write("false");

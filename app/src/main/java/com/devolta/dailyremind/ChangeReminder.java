@@ -32,6 +32,10 @@ import android.widget.TimePicker;
 import com.devolta.dailyremind.RecyclerData.Card;
 import com.devolta.devoltalibrary.Calculate;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -48,8 +52,10 @@ public class ChangeReminder extends AppCompatActivity {
     private final SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault());
     private final SimpleDateFormat sdtf = new SimpleDateFormat("MM/dd/yyyy hh:mm a", Locale.getDefault());
     private final Calendar calendar = Calendar.getInstance();
+    AppCompatSpinner spinner_mode;
     private SimpleDateFormat stf;
     private ArrayList<Card> cards;
+    private String remindText;
     private AutofitTextView selectedTimeView;
     private final TimePickerDialog.OnTimeSetListener onTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
 
@@ -81,6 +87,7 @@ public class ChangeReminder extends AppCompatActivity {
     private int month;
     private int day;
     private boolean repeat;
+    private boolean vibrate;
     private long repeat_quantity;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,13 +104,15 @@ public class ChangeReminder extends AppCompatActivity {
         selectedDateView = (AutofitTextView) findViewById(R.id.date);
         selectedTimeView = (AutofitTextView) findViewById(R.id.time);
         SwitchCompat repeat_switch = (SwitchCompat) findViewById(R.id.repeat_switch);
-        AppCompatSpinner spinner_mode = (AppCompatSpinner) findViewById(R.id.spinner_mode);
+        SwitchCompat vibrate_switch = (SwitchCompat) findViewById(R.id.vibrate_switch);
+        spinner_mode = (AppCompatSpinner) findViewById(R.id.spinner_mode);
         quantity_et = (AppCompatEditText) findViewById(R.id.quantity_et);
         editText = (AppCompatEditText) findViewById(R.id.remindText);
 
         repeat_switch.setChecked(getIntent().getBooleanExtra("REPEAT", false));
+        vibrate_switch.setChecked(getIntent().getBooleanExtra("VIBRATE", false));
 
-        boolean is24Hour;
+        final boolean is24Hour;
         if (!DateFormat.is24HourFormat(this)) {
             stf = new SimpleDateFormat("hh:mm a", Locale.getDefault());
             is24Hour = false;
@@ -146,6 +155,13 @@ public class ChangeReminder extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 repeat = isChecked;
+            }
+        });
+
+        vibrate_switch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                vibrate = isChecked;
             }
         });
 
@@ -194,7 +210,7 @@ public class ChangeReminder extends AppCompatActivity {
 
             String remainingTime = calculate.calcTimeDiff(then, now); //get remaining time
 
-            String remindText = editText.getText().toString();
+            remindText = editText.getText().toString();
             card.cardText(remindText);
             card.cardDate(selectedDateView.getText().toString());
             card.cardRemainingTime(remainingTime);
@@ -212,6 +228,7 @@ public class ChangeReminder extends AppCompatActivity {
                 } else {
                     String quantity_str = quantity_et.getText().toString();
                     int quantity = Integer.parseInt(quantity_str);
+                    saveInfo(quantity_str);
 
                     cards.set(position, card);
                     b.putSerializable("cards", cards);
@@ -221,6 +238,7 @@ public class ChangeReminder extends AppCompatActivity {
                     Intent intent1 = new Intent(getBaseContext(), AlarmReceiver.class);
                     intent1.putExtra("RemindText", remindText);
                     intent1.putExtra("RemindPosition", position);
+                    intent1.putExtra("Vibrate", vibrate);
                     alarmIntent = PendingIntent.getBroadcast(getApplicationContext(), position, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
 
                     alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), repeat_quantity * quantity, alarmIntent);
@@ -235,6 +253,9 @@ public class ChangeReminder extends AppCompatActivity {
                     Snackbar snackbar = Snackbar.make(this.findViewById(android.R.id.content), R.string.elapsed_time, Snackbar.LENGTH_SHORT);
                     snackbar.show();
                 } else {
+                    //write reminder info to file
+                    saveInfo("0");
+
                     cards.set(position, card);
                     b.putSerializable("cards", cards);
                     int intentNumber = cards.size() - 1;
@@ -244,6 +265,7 @@ public class ChangeReminder extends AppCompatActivity {
                     Intent intent1 = new Intent(getBaseContext(), AlarmReceiver.class);
                     intent1.putExtra("RemindText", remindText);
                     intent1.putExtra("RemindPosition", position);
+                    intent1.putExtra("Vibrate", vibrate);
                     alarmIntent = PendingIntent.getBroadcast(getApplicationContext(), intentNumber, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
 
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -261,6 +283,47 @@ public class ChangeReminder extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    //write all necessary infos about a reminder to a file
+    private void saveInfo(String quantity) {
+        try {
+            FileOutputStream fileOutputStream = new FileOutputStream(new File(getFilesDir(), "Reminder" + " " + cards.size()));
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fileOutputStream);
+            BufferedWriter bufferedWriter = new BufferedWriter(outputStreamWriter);
+            try {
+                bufferedWriter.write(remindText);
+                bufferedWriter.newLine();
+                bufferedWriter.write(selectedTimeView.getText().toString());
+                bufferedWriter.newLine();
+                bufferedWriter.write(selectedDateView.getText().toString());
+                bufferedWriter.newLine();
+                if (repeat) {
+                    bufferedWriter.write("true");
+                } else {
+                    bufferedWriter.write("false");
+                }
+                bufferedWriter.newLine();
+                if (vibrate) {
+                    bufferedWriter.write("true");
+                } else {
+                    bufferedWriter.write("false");
+                }
+                bufferedWriter.newLine();
+                bufferedWriter.write(quantity);
+                bufferedWriter.newLine();
+                bufferedWriter.write(spinner_mode.getSelectedItem().toString());
+                bufferedWriter.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+                bufferedWriter.close();
+            }
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     private void addClickListener(final boolean is24Hour) {
 

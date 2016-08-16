@@ -25,8 +25,10 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
 
         SharedPreferences prefs = null;
         try {
-            Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-            vibrator.vibrate(500);
+            if (intent.getBooleanExtra("Vibrate", true)) {
+                Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+                vibrator.vibrate(500);
+            }
 
             AudioManager manager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
             manager.setStreamVolume(AudioManager.STREAM_NOTIFICATION, manager.getStreamVolume(AudioManager.STREAM_NOTIFICATION), 0);

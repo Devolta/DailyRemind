@@ -16,4 +16,7 @@
     <string name="theme_desc">"Wähle dein Theme"</string>
     <string name="about">Infos</string>
     <string name="licenses_title">Lizenzen</string>
+    <string name="vibrate">Vibrieren</string>
+    <string name="advanced">Erweitert</string>
+
 </resources>
