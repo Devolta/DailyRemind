@@ -287,7 +287,12 @@ public class ChangeReminder extends AppCompatActivity {
     //write all necessary infos about a reminder to a file
     private void saveInfo(String quantity) {
         try {
-            FileOutputStream fileOutputStream = new FileOutputStream(new File(getFilesDir(), "Reminder" + " " + cards.size()));
+            int position = getIntent().getIntExtra("POSITION", -1);
+            if (position == -1) {
+                Log.e("ChangeReminder", "no reminder position");
+                return;
+            }
+            FileOutputStream fileOutputStream = new FileOutputStream(new File(getFilesDir(), "Reminder" + " " + position));
             OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fileOutputStream);
             BufferedWriter bufferedWriter = new BufferedWriter(outputStreamWriter);
             try {

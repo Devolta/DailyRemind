@@ -141,6 +141,7 @@ public class AddReminder extends AppCompatActivity {
             }
         });
 
+        vibrate_switch.setChecked(true);
         vibrate_switch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
