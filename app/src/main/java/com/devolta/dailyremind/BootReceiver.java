@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
-import android.util.Log;
 
 import com.devolta.dailyremind.RecyclerData.Card;
 
@@ -57,7 +56,6 @@ public class BootReceiver extends BroadcastReceiver {
 
         if (intent.getAction().equalsIgnoreCase(Intent.ACTION_BOOT_COMPLETED)) {
             if (context != null) {
-                Log.d("Reboot", "Reboot complete");
 
                 AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
@@ -71,12 +69,9 @@ public class BootReceiver extends BroadcastReceiver {
 
                         String remindText = prefs.getString("Text", "null");
                         intent1.putExtra("RemindText", remindText);
-                        Log.d("Name", AddReminder.class.getSimpleName() + " " + number);
                         int intentNumber = prefs.getInt("intentNumber", 0);
                         String repeat = prefs.getString("repeat", "null");
                         long calendarTime = prefs.getLong("CalendarTime", 0);
-
-                        Log.d("Time", "" + calendarTime + "   " + calendar.getTimeInMillis());
 
                         if (calendarTime > calendar.getTimeInMillis()) {
 
@@ -93,7 +88,6 @@ public class BootReceiver extends BroadcastReceiver {
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                                     alarmMgr.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmIntent);
                                 } else {
-                                    Log.d("Test", "" + calendar.getTimeInMillis());
                                     alarmMgr.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmIntent);
                                 }
 

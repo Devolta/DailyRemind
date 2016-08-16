@@ -66,7 +66,6 @@ public class DailyRemindWidgetProvider extends AppWidgetProvider {
             // Get the layout for the App Widget
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_dailyremind);
 
-            Log.d("WIDGET", "Update called");
             if (!cards.isEmpty()) {
 
                 SimpleDateFormat sdtf;
@@ -93,7 +92,7 @@ public class DailyRemindWidgetProvider extends AppWidgetProvider {
                         times.add(remainingTime);
                         titles.add(card.getCardText());
                     } catch (ParseException e) {
-                        Log.d("PARSEEXCEPTION:", " " + e);
+                        Log.e("PARSEEXCEPTION:", " " + e);
                     }
                 }
                 //sort all the remaining times from lowest to highest
@@ -101,8 +100,6 @@ public class DailyRemindWidgetProvider extends AppWidgetProvider {
                 Collections.sort(titles, Collections.<String>reverseOrder());
                 String remainingTime = times.get(0);
                 String title = titles.get(0);
-
-                Log.d("WIDGET", remainingTime);
 
                 if (remainingTime.isEmpty() || remainingTime.contentEquals("error")) {
                     views.setTextViewText(R.id.no_alarms_text, context.getText(R.string.no_alarm_text));

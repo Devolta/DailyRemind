@@ -13,7 +13,6 @@ import android.os.PowerManager;
 import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.WakefulBroadcastReceiver;
-import android.util.Log;
 
 public class AlarmReceiver extends WakefulBroadcastReceiver {
 
@@ -37,7 +36,6 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
             r.play();
 
             String remindText = intent.getStringExtra("RemindText");
-            Log.d("ALARM", "" + remindText);
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
             if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) {
                 builder

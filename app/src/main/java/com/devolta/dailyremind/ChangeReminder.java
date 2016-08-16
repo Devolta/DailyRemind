@@ -102,7 +102,6 @@ public class ChangeReminder extends AppCompatActivity {
         editText = (AppCompatEditText) findViewById(R.id.remindText);
 
         repeat_switch.setChecked(getIntent().getBooleanExtra("REPEAT", false));
-        Log.d("Switch", "" + getIntent().getBooleanExtra("REPEAT", false));
 
         boolean is24Hour;
         if (!DateFormat.is24HourFormat(this)) {
@@ -118,7 +117,7 @@ public class ChangeReminder extends AppCompatActivity {
             Date date1 = sdtf.parse(date + " " + time);
             calendar.setTime(date1);
         } catch (ParseException e) {
-            Log.d("PARSEEXCEPTION:", " " + e);
+            Log.e("PARSEEXCEPTION:", " " + e);
         }
         selectedDateView.setText(date);
         editText.setText(text);
@@ -252,7 +251,6 @@ public class ChangeReminder extends AppCompatActivity {
                     } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                         alarmMgr.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmIntent);
                     } else {
-                        Log.d("Test", "" + calendar.getTimeInMillis());
                         alarmMgr.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmIntent);
                     }
                     setResult(Activity.RESULT_OK, intent);

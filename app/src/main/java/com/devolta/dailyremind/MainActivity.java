@@ -105,8 +105,6 @@ public class MainActivity extends AppCompatActivity {
                     // Get the reminder id associated with the recycler view item
                     for (int i = cards.size(); i >= 0; i--) {
                         if (multiSelector.isSelected(i, 0)) {
-
-                            Log.d("MAIN", "removing items");
                             if (!cards.isEmpty()) {
                                 removeItem.remove(i);
                             }
@@ -306,7 +304,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         handleArrayList(getApplicationContext(), 0);
-        Log.d("Arraylist", "" + intentNumber2.size());
 
         recyclerView = (RecyclerView) findViewById(R.id.rv);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -417,12 +414,10 @@ public class MainActivity extends AppCompatActivity {
                     try {
                         then = sdtf.parse(date + " " + time);
                     } catch (ParseException e) {
-                        Log.d("PARSEEXCEPTION:", " " + e);
                         return null;
                     }
 
                     String remainingTime = calculate.calcTimeDiff(then.getTime(), now.getTime());
-                    Log.d("Card", "Card updated " + remainingTime);
                     cards.get(i).cardRemainingTime(remainingTime);
 
                 }
@@ -481,7 +476,7 @@ public class MainActivity extends AppCompatActivity {
             boolean success = fromFile.renameTo(tempFile);
             boolean success1 = toFile.renameTo(fromFile);
             boolean success2 = tempFile.renameTo(toFile);
-            Log.d("File Rename", "" + success + " " + success1 + " " + success2);
+            Log.i("File Rename", "" + success + " " + success1 + " " + success2);
 
             //close contextual menu
             actionMode2.finish();
@@ -503,7 +498,6 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void remove(int position) {
             cards.remove(position);
-            Log.d("Main", "removed " + position);
             notifyItemRemoved(position);
             notifyItemRangeChanged(position, cards.size());
 
@@ -513,7 +507,6 @@ public class MainActivity extends AppCompatActivity {
 
             int intentNumber = intentNumber2.get(position);
             intentNumber2.remove(position);
-            Log.d("IntentNumber", "" + intentNumber);
 
             PendingIntent alarmIntent = PendingIntent.getBroadcast(getApplicationContext(), intentNumber, intent1, PendingIntent.FLAG_CANCEL_CURRENT);
 
@@ -528,8 +521,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         public void alarmDone(boolean alarmDone) {
-
-            Log.d("ALARMDONE", "" + alarmDone);
 
             if (alarmDone) {
                 card_tv2.setVisibility(View.INVISIBLE);
@@ -547,11 +538,11 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        public class ViewHolder extends SwappingHolder implements View.OnClickListener, View.OnLongClickListener {
+        class ViewHolder extends SwappingHolder implements View.OnClickListener, View.OnLongClickListener {
 
             public final LinearLayout background;
 
-            public ViewHolder(View itemView, RemoveItem removeItem1, AlarmDone alarmDone1) {
+            ViewHolder(View itemView, RemoveItem removeItem1, AlarmDone alarmDone1) {
                 super(itemView, multiSelector);
                 itemView.setOnClickListener(this);
                 itemView.setOnLongClickListener(this);
