@@ -9,6 +9,7 @@
     <string name="new_reminder">New Reminder</string>
     <string name="missing_info">required information missing</string>
     <string name="elapsed_time">time set is in the past</string>
+    <string name="quantity_missing">repeat quantity is missing</string>
     <string name="no_alarm_text">no current alarms</string>
     <string name="auto_night_title">Auto Night Mode</string>
     <string name="auto_night_desc">Change automatically to a dark theme in the evening</string>

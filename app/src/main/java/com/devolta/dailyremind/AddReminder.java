@@ -142,13 +142,13 @@ public class AddReminder extends AppCompatActivity {
             }
         });
 
-        vibrate_switch.setChecked(true);
         vibrate_switch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 vibrate = isChecked;
             }
         });
+        vibrate_switch.setChecked(true);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar2);
         setSupportActionBar(toolbar);
@@ -158,6 +158,7 @@ public class AddReminder extends AppCompatActivity {
         }
 
         FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        mFirebaseAnalytics.setAnalyticsCollectionEnabled(true);
 
     }
 
@@ -205,6 +206,11 @@ public class AddReminder extends AppCompatActivity {
                     snackbar.show();
                 } else {
                     //write reminder info to file
+                    if (quantity_et.getText().length() == 0) {
+                        Snackbar snackbar = Snackbar.make(this.findViewById(android.R.id.content), R.string.quantity_missing, Snackbar.LENGTH_SHORT);
+                        snackbar.show();
+                        return false;
+                    }
                     String quantity_str = quantity_et.getText().toString();
                     int quantity = Integer.parseInt(quantity_str);
                     saveInfo(quantity_str);
@@ -221,7 +227,6 @@ public class AddReminder extends AppCompatActivity {
                     Intent intent1 = new Intent(getBaseContext(), AlarmReceiver.class);
                     intent1.putExtra("RemindText", remindText);
                     intent1.putExtra("RemindPosition", intentNumber);
-                    intent1.putExtra("Vibrate", vibrate);
                     alarmIntent = PendingIntent.getBroadcast(getApplicationContext(), intentNumber, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
 
                     SharedPreferences.Editor editor = prefs.edit();
@@ -260,7 +265,6 @@ public class AddReminder extends AppCompatActivity {
                     Intent intent1 = new Intent(getBaseContext(), AlarmReceiver.class);
                     intent1.putExtra("RemindText", remindText);
                     intent1.putExtra("RemindPosition", intentNumber);
-                    intent1.putExtra("Vibrate", vibrate);
                     alarmIntent = PendingIntent.getBroadcast(getApplicationContext(), intentNumber, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
 
                     SharedPreferences.Editor editor = prefs.edit();
@@ -332,7 +336,7 @@ public class AddReminder extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Calendar calendar = Calendar.getInstance();
-                int hour = calendar.get(Calendar.HOUR);
+                int hour = calendar.get(Calendar.HOUR_OF_DAY);
                 int minute = calendar.get(Calendar.MINUTE);
                 TimePickerDialog timePickerDialog = new TimePickerDialog(AddReminder.this, onTimeSetListener, hour, minute, is24hour);
                 timePickerDialog.show();

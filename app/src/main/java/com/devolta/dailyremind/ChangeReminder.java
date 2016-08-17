@@ -173,6 +173,7 @@ public class ChangeReminder extends AppCompatActivity {
         }
 
         FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        mFirebaseAnalytics.setAnalyticsCollectionEnabled(true);
 
     }
 
@@ -229,6 +230,12 @@ public class ChangeReminder extends AppCompatActivity {
                     Snackbar snackbar = Snackbar.make(this.findViewById(android.R.id.content), R.string.elapsed_time, Snackbar.LENGTH_SHORT);
                     snackbar.show();
                 } else {
+                    //write reminder info to file
+                    if (quantity_et.getText().length() == 0) {
+                        Snackbar snackbar = Snackbar.make(this.findViewById(android.R.id.content), R.string.quantity_missing, Snackbar.LENGTH_SHORT);
+                        snackbar.show();
+                        return false;
+                    }
                     String quantity_str = quantity_et.getText().toString();
                     int quantity = Integer.parseInt(quantity_str);
                     saveInfo(quantity_str);
@@ -241,7 +248,6 @@ public class ChangeReminder extends AppCompatActivity {
                     Intent intent1 = new Intent(getBaseContext(), AlarmReceiver.class);
                     intent1.putExtra("RemindText", remindText);
                     intent1.putExtra("RemindPosition", position);
-                    intent1.putExtra("Vibrate", vibrate);
                     alarmIntent = PendingIntent.getBroadcast(getApplicationContext(), position, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
 
                     alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), repeat_quantity * quantity, alarmIntent);
@@ -268,7 +274,6 @@ public class ChangeReminder extends AppCompatActivity {
                     Intent intent1 = new Intent(getBaseContext(), AlarmReceiver.class);
                     intent1.putExtra("RemindText", remindText);
                     intent1.putExtra("RemindPosition", position);
-                    intent1.putExtra("Vibrate", vibrate);
                     alarmIntent = PendingIntent.getBroadcast(getApplicationContext(), intentNumber, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
 
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -339,7 +344,7 @@ public class ChangeReminder extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Calendar calendar = Calendar.getInstance();
-                int hour = calendar.get(Calendar.HOUR);
+                int hour = calendar.get(Calendar.HOUR_OF_DAY);
                 int minute = calendar.get(Calendar.MINUTE);
                 TimePickerDialog timePickerDialog = new TimePickerDialog(ChangeReminder.this, onTimeSetListener, hour, minute, is24Hour);
                 timePickerDialog.show();

@@ -35,6 +35,7 @@ public class AboutActivity extends AppCompatActivity {
         }
 
         FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        mFirebaseAnalytics.setAnalyticsCollectionEnabled(true);
 
     }
 

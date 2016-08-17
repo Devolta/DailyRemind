@@ -266,7 +266,12 @@ public class MainActivity extends AppCompatActivity {
             String theme = prefs.getString("theme_pref", null);
             boolean autoNightMode = prefs.getBoolean("auto_night_mode", false);
 
-            if (theme != null) {
+            if (autoNightMode) {
+                Log.d("TEST", "AutoNightMode activated");
+                getDelegate().setLocalNightMode(
+                        AppCompatDelegate.MODE_NIGHT_AUTO);
+                recreate();
+            } else if (theme != null) {
                 if (theme.contentEquals("day")) {
                     getDelegate().setLocalNightMode(
                             AppCompatDelegate.MODE_NIGHT_NO);
@@ -276,10 +281,6 @@ public class MainActivity extends AppCompatActivity {
                             AppCompatDelegate.MODE_NIGHT_YES);
                     recreate();
                 }
-            } else if (autoNightMode) {
-                getDelegate().setLocalNightMode(
-                        AppCompatDelegate.MODE_NIGHT_AUTO);
-                recreate();
             } else {
                 getDelegate().setLocalNightMode(
                         AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
@@ -353,6 +354,7 @@ public class MainActivity extends AppCompatActivity {
         refreshLayout.setColorSchemeResources(R.color.orange, R.color.green, R.color.blue, R.color.purple);
 
         FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        mFirebaseAnalytics.setAnalyticsCollectionEnabled(true);
     }
 
     @Override
@@ -564,11 +566,12 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
+                String remainingTime = (String) card_tv2.getText();
                 if (multiSelector.tapSelection(this)) {
 
                     background.setSelected(true);
 
-                } else {
+                } else if (!remainingTime.equalsIgnoreCase("error")) {
 
                     int position = getAdapterPosition();
                     String text = "error";
@@ -589,6 +592,7 @@ public class MainActivity extends AppCompatActivity {
                             text = bufferedReader.readLine();
                             if (text == null) {
                                 Log.e("BufferedReader", "failed to read Reminder infos");
+                                return;
                             }
                             time = bufferedReader.readLine();
                             date = bufferedReader.readLine();
@@ -598,7 +602,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                             vibrate = bufferedReader.readLine();
                             if (vibrate != null) {
-                                vibrate2 = repeat.equals("true");
+                                vibrate2 = vibrate.equals("true");
                             }
                             quantity = bufferedReader.readLine();
                             mode = bufferedReader.readLine();
@@ -607,7 +611,9 @@ public class MainActivity extends AppCompatActivity {
                             inputStream.close();
                         } catch (Exception e) {
                             e.printStackTrace();
+                            inputStreamReader.close();
                             bufferedReader.close();
+                            inputStream.close();
                         }
                     } catch (Exception e) {
                         e.printStackTrace();

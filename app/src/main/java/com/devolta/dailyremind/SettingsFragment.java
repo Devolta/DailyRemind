@@ -26,7 +26,7 @@ public class SettingsFragment extends XpPreferenceFragment {
 
                 //Auto Night Mode Setting
                 if (preference.getKey().contentEquals("auto_night_switch")) {
-                    Boolean boolVal = (Boolean) value;
+                    boolean boolVal = (Boolean) value;
                     SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getContext());
                     SharedPreferences.Editor editor = settings.edit();
                     editor.putBoolean("auto_night_mode", boolVal);
@@ -39,6 +39,7 @@ public class SettingsFragment extends XpPreferenceFragment {
                 //Theme Setting
                 if (preference.getKey().contentEquals("theme_pref")) {
                     ListPreference listPreference = (ListPreference) preference;
+
                     int index = listPreference.findIndexOfValue(stringValue);
 
                     String entry = (String) ((ListPreference) preference).getEntry();
@@ -83,11 +84,19 @@ public class SettingsFragment extends XpPreferenceFragment {
 
         addPreferencesFromResource(R.xml.preferences);
 
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+
         SwitchPreference switchPreference = (SwitchPreference) getPreferenceManager().findPreference("auto_night_switch");
         switchPreference.setOnPreferenceChangeListener(preferenceChangeListener);
 
+        boolean autoNightMode = prefs.getBoolean("auto_night_mode", false);
+
         listPreference = (ListPreference) getPreferenceManager().findPreference("theme_pref");
-        listPreference.setOnPreferenceChangeListener(preferenceChangeListener);
+        if (autoNightMode) {
+            listPreference.setEnabled(false);
+        } else {
+            listPreference.setOnPreferenceChangeListener(preferenceChangeListener);
+        }
 
     }
 

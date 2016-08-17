@@ -52,6 +52,7 @@ public class SettingsActivity extends AppCompatActivity implements
         }
 
         FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        mFirebaseAnalytics.setAnalyticsCollectionEnabled(true);
 
     }
 
