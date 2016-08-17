@@ -13,6 +13,8 @@ import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
+
 import net.xpece.android.support.preference.PreferenceScreenNavigationStrategy;
 
 public class SettingsActivity extends AppCompatActivity implements
@@ -49,6 +51,7 @@ public class SettingsActivity extends AppCompatActivity implements
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
+        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
     }
 

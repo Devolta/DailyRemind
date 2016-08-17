@@ -44,6 +44,7 @@ import com.devolta.dailyremind.Interfaces.ItemTouchHelperAdapter;
 import com.devolta.dailyremind.Interfaces.RemoveItem;
 import com.devolta.dailyremind.RecyclerData.Card;
 import com.devolta.devoltalibrary.Calculate;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -350,6 +351,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         refreshLayout.setColorSchemeResources(R.color.orange, R.color.green, R.color.blue, R.color.purple);
+
+        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
     }
 
     @Override

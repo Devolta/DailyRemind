@@ -31,6 +31,7 @@ import android.widget.TimePicker;
 
 import com.devolta.dailyremind.RecyclerData.Card;
 import com.devolta.devoltalibrary.Calculate;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -170,6 +171,8 @@ public class ChangeReminder extends AppCompatActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+
+        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
     }
 
